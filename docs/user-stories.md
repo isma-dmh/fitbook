@@ -59,7 +59,29 @@
 - **US-C11** : En tant que coach, je veux consulter les avis et notes que j'ai reçus afin d'évaluer et d'améliorer mes séances.
 
 ## Salle / gestionnaire
-(à venir)
+
+### Informations de la salle
+- **US-G1** : En tant que gestionnaire, je veux créer la fiche de ma salle (nom, adresse, description, photos, équipements) afin de la présenter aux sportifs.
+- **US-G2** : En tant que gestionnaire, je veux modifier les informations de ma salle afin de les garder à jour.
+
+### Activités et cours
+- **US-G3** : En tant que gestionnaire, je veux gérer les activités proposées dans ma salle (ajouter, modifier, supprimer) afin que les sportifs sachent ce que je propose.
+- **US-G4** : En tant que gestionnaire, je veux créer, modifier et supprimer des cours (activité, date, heure, durée, prix) afin de les proposer à la réservation.
+
+### Horaires et capacités
+- **US-G5** : En tant que gestionnaire, je veux définir les horaires d'ouverture de ma salle afin d'informer les sportifs de mes plages d'accueil.
+- **US-G6** : En tant que gestionnaire, je veux définir la capacité maximale de ma salle et de chaque cours afin d'éviter le surbooking.
+
+### Calendrier et disponibilités
+- **US-G7** : En tant que gestionnaire, je veux gérer les disponibilités de ma salle (ouvrir ou bloquer un créneau, fermeture exceptionnelle) afin de contrôler quand elle peut être réservée.
+- **US-G8** : En tant que gestionnaire, je veux consulter le calendrier de ma salle (cours, disponibilités, réservations) afin d'organiser mon planning.
+
+### Réservations
+- **US-G9** : En tant que gestionnaire, je veux consulter les réservations de ma salle et de mes cours afin de connaître le taux de remplissage.
+- **US-G10** : En tant que gestionnaire, je veux être notifié par email lors d'une nouvelle réservation ou d'une annulation afin d'être informé en temps réel.
+
+### Avis
+- **US-G11** : En tant que gestionnaire, je veux consulter les avis et notes de ma salle afin d'améliorer mon service.
 
 ## Administrateur
 (à venir)
