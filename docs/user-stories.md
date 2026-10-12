@@ -34,7 +34,29 @@
 - **US-S17** : En tant que sportif, je veux voir mes réservations dans un calendrier afin de planifier mes entraînements.
 
 ## Coach
-(à venir)
+
+### Profil professionnel
+- **US-C1** : En tant que coach, je veux créer mon profil professionnel (photo, présentation, spécialités, tarifs, ville) afin de me présenter aux sportifs.
+- **US-C2** : En tant que coach, je veux modifier mon profil professionnel afin de garder mes informations à jour.
+
+### Séances
+- **US-C3** : En tant que coach, je veux créer une séance (activité, date, heure, durée, capacité, prix) afin de la proposer à la réservation.
+- **US-C4** : En tant que coach, je veux modifier une séance afin de corriger ou d'adapter ses informations.
+- **US-C5** : En tant que coach, je veux supprimer une séance afin de retirer une offre que je ne peux plus assurer.
+
+### Horaires et disponibilités
+- **US-C6** : En tant que coach, je veux définir mes horaires de travail afin d'indiquer quand je suis disponible.
+- **US-C7** : En tant que coach, je veux gérer mes disponibilités (ajouter, modifier, bloquer un créneau) afin d'éviter les réservations quand je suis absent.
+
+### Calendrier
+- **US-C8** : En tant que coach, je veux consulter mon calendrier (séances, disponibilités, réservations) afin d'organiser mes journées.
+
+### Réservations
+- **US-C9** : En tant que coach, je veux consulter les réservations de mes séances afin de savoir qui participe et combien de places restent.
+- **US-C10** : En tant que coach, je veux être notifié par email lors d'une nouvelle réservation ou d'une annulation afin d'être informé en temps réel.
+
+### Avis
+- **US-C11** : En tant que coach, je veux consulter les avis et notes que j'ai reçus afin d'évaluer et d'améliorer mes séances.
 
 ## Salle / gestionnaire
 (à venir)
