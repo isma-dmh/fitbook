@@ -84,7 +84,25 @@
 - **US-G11** : En tant que gestionnaire, je veux consulter les avis et notes de ma salle afin d'améliorer mon service.
 
 ## Administrateur
-(à venir)
+
+### Gestion des utilisateurs
+- **US-A1** : En tant qu'administrateur, je veux consulter la liste des utilisateurs (sportifs, coachs, gestionnaires) afin d'avoir une vue d'ensemble de la plateforme.
+- **US-A2** : En tant qu'administrateur, je veux modifier, désactiver ou supprimer un compte utilisateur afin de gérer les accès et de bloquer les comptes abusifs.
+- **US-A3** : En tant qu'administrateur, je veux attribuer ou modifier le rôle d'un utilisateur afin de contrôler ses permissions.
+
+### Gestion des salles et des coachs
+- **US-A4** : En tant qu'administrateur, je veux consulter, modifier ou supprimer les salles afin de garantir la qualité des informations publiées.
+- **US-A5** : En tant qu'administrateur, je veux consulter, modifier ou supprimer les coachs afin de garantir la qualité des informations publiées.
+
+### Gestion des activités
+- **US-A6** : En tant qu'administrateur, je veux créer, modifier et supprimer les activités (yoga, boxe, musculation...) afin de maintenir une liste cohérente pour toute la plateforme.
+
+### Gestion des réservations
+- **US-A7** : En tant qu'administrateur, je veux consulter, modifier ou annuler n'importe quelle réservation afin de résoudre les litiges.
+
+### Modération
+- **US-A8** : En tant qu'administrateur, je veux consulter tous les avis et notes afin de surveiller les contenus publiés.
+- **US-A9** : En tant qu'administrateur, je veux supprimer un avis inapproprié (insultes, spam) afin de garder une plateforme respectueuse.
 
 ## Transversal
 (à venir)
