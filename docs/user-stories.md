@@ -105,4 +105,20 @@
 - **US-A9** : En tant qu'administrateur, je veux supprimer un avis inapproprié (insultes, spam) afin de garder une plateforme respectueuse.
 
 ## Transversal
-(à venir)
+
+### Visiteur (non connecté)
+- **US-T1** : En tant que visiteur, je veux consulter les salles, les coachs et les cours, et utiliser la barre de recherche sans être connecté, afin de découvrir la plateforme avant de m'inscrire.
+
+### Inscription et confirmation
+- **US-T2** : En tant que visiteur, je veux m'inscrire en choisissant mon rôle (sportif, coach ou gestionnaire) afin d'accéder aux fonctionnalités adaptées à mes besoins.
+- **US-T3** : En tant que nouvel utilisateur, je veux recevoir un email de confirmation avec un lien afin de valider mon adresse email et activer mon compte.
+- **US-T4** : En tant que nouvel utilisateur, je veux pouvoir demander un nouvel email de confirmation si le lien a expiré afin de ne pas rester bloqué.
+
+### Connexion et sécurité
+- **US-T5** : En tant qu'utilisateur, je veux me connecter avec mon email et mon mot de passe afin d'accéder à mon espace personnel.
+- **US-T6** : En tant qu'utilisateur, je veux me déconnecter afin de protéger mon compte.
+- **US-T7** : En tant qu'utilisateur, je veux réinitialiser mon mot de passe par email afin de récupérer l'accès à mon compte si je l'oublie.
+- **US-T8** : En tant qu'utilisateur connecté, je veux accéder uniquement aux pages correspondant à mon rôle afin que mes données et celles des autres restent protégées.
+
+### Notifications
+- **US-T9** : En tant qu'utilisateur, je veux recevoir des notifications par email liées aux réservations (confirmation, annulation) afin d'être informé de tout changement.
