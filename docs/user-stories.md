@@ -8,7 +8,7 @@
 
 ### Recherche
 - **US-S3** : En tant que sportif, je veux utiliser une barre de recherche afin de trouver rapidement une salle, un cours ou un coach.
-- **US-S4** : En tant que sportif, je veux filtrer les résultats (type, ville, activité, note, prix, disponibilité) afin d'affiner ma recherche.
+- **US-S4** : En tant que visiteur ou sportif, je veux filtrer les résultats (type, ville, activité, note, prix, disponibilité) afin d'affiner ma recherche.
 
 ### Consultation
 - **US-S5** : En tant que sportif, je veux consulter la fiche détaillée d'une salle afin de connaître ses activités, ses horaires et ses avis.
