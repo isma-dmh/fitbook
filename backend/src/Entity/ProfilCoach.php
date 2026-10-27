@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\Timestampable;
 use App\Repository\ProfilCoachRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,24 @@ class ProfilCoach
     #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
+
+    /**
+     * @var Collection<int, HoraireCoach>
+     */
+    #[ORM\OneToMany(targetEntity: HoraireCoach::class, mappedBy: 'profilCoach', orphanRemoval: true)]
+    private Collection $horaireCoaches;
+
+    /**
+     * @var Collection<int, Salle>
+     */
+    #[ORM\ManyToMany(targetEntity: Salle::class, inversedBy: 'profilCoaches')]
+    private Collection $salles;
+
+    public function __construct()
+    {
+        $this->horaireCoaches = new ArrayCollection();
+        $this->salles = new ArrayCollection();
+    }
 
     use Timestampable;
 
@@ -95,6 +115,60 @@ class ProfilCoach
     public function setUtilisateur(Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HoraireCoach>
+     */
+    public function getHoraireCoaches(): Collection
+    {
+        return $this->horaireCoaches;
+    }
+
+    public function addHoraireCoach(HoraireCoach $horaireCoach): static
+    {
+        if (!$this->horaireCoaches->contains($horaireCoach)) {
+            $this->horaireCoaches->add($horaireCoach);
+            $horaireCoach->setProfilCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHoraireCoach(HoraireCoach $horaireCoach): static
+    {
+        if ($this->horaireCoaches->removeElement($horaireCoach)) {
+            // set the owning side to null (unless already changed)
+            if ($horaireCoach->getProfilCoach() === $this) {
+                $horaireCoach->setProfilCoach(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Salle>
+     */
+    public function getSalles(): Collection
+    {
+        return $this->salles;
+    }
+
+    public function addSalle(Salle $salle): static
+    {
+        if (!$this->salles->contains($salle)) {
+            $this->salles->add($salle);
+        }
+
+        return $this;
+    }
+
+    public function removeSalle(Salle $salle): static
+    {
+        $this->salles->removeElement($salle);
 
         return $this;
     }
