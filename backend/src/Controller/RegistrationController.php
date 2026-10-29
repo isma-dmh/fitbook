@@ -71,17 +71,8 @@ final class RegistrationController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        $signature = $verifyEmailHelper->generateSignature(
-            'api_verify_email',
-            (string) $user->getId(),
-            $user->getEmail(),
-            ['id' => $user->getId()]
-        );
         try {
-            $mailer->send((new Email())
-                ->from('no-reply@fitbook.local')->to($user->getEmail())
-                ->subject('Confirme ton adresse email')
-                ->html('<p>Bienvenue sur FitBook !</p><p><a href="' . $signature->getSignedUrl() . '">Confirmer mon email</a></p>'));
+            $this->sendVerificationEmail($user, $verifyEmailHelper, $mailer);
         } catch (TransportExceptionInterface $e) {
             // Le compte est créé mais l'email n'est pas parti : on le journalise
             // et l'utilisateur pourra demander un nouvel envoi (US-T4).
@@ -124,5 +115,58 @@ final class RegistrationController extends AbstractController
         $em->flush();
 
         return $this->redirect($frontendUrl . '/email-verifie?statut=ok');
+    }
+
+    #[Route('/resend-verification', name: 'api_resend_verification', methods: ['POST'])]
+    public function resendVerification(
+        Request $request,
+        ValidatorInterface $validator,
+        UtilisateurRepository $users,
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        MailerInterface $mailer,
+        LoggerInterface $logger,
+    ): JsonResponse {
+        $data = $request->toArray();
+
+        $violations = $validator->validate($data, new Assert\Collection([
+            'email' => [new Assert\Type('string'), new Assert\NotBlank(), new Assert\Email()],
+        ]));
+        if (count($violations) > 0) {
+            return $this->json(['error' => 'Email invalide'], 422);
+        }
+
+        $user = $users->findOneBy(['email' => $data['email']]);
+        if ($user && $user->isActif() && !$user->isEmailVerifie()) {
+            try {
+                $this->sendVerificationEmail($user, $verifyEmailHelper, $mailer);
+            } catch (TransportExceptionInterface $e) {
+                $logger->error('Échec du renvoi de l\'email de confirmation', [
+                    'userId' => $user->getId(),
+                    'erreur' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $this->json([
+            'message' => 'Si un compte non confirmé existe pour cette adresse, un nouvel email a été envoyé.',
+        ], 202);
+    }
+
+    private function sendVerificationEmail(
+        Utilisateur $user,
+        VerifyEmailHelperInterface $verifyEmailHelper,
+        MailerInterface $mailer,
+    ): void {
+        $signature = $verifyEmailHelper->generateSignature(
+            'api_verify_email',
+            (string) $user->getId(),
+            $user->getEmail(),
+            ['id' => $user->getId()]
+        );
+
+        $mailer->send((new Email())
+            ->from('no-reply@fitbook.local')->to($user->getEmail())
+            ->subject('Confirme ton adresse email')
+            ->html('<p>Bienvenue sur FitBook !</p><p><a href="' . $signature->getSignedUrl() . '">Confirmer mon email</a></p>'));
     }
 }
