@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -52,6 +54,52 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
+
+    /**
+     * @var Collection<int, Salle>
+     */
+    #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: 'gestionnaire')]
+    private Collection $salles;
+
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'utilisateur')]
+    private Collection $reservations;
+
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'utilisateur')]
+    private Collection $avis;
+
+    /**
+     * @var Collection<int, Salle>
+     */
+    #[ORM\ManyToMany(targetEntity: Salle::class, inversedBy: 'utilisateurs')]
+    private Collection $favorisSalles;
+
+    /**
+     * @var Collection<int, ProfilCoach>
+     */
+    #[ORM\ManyToMany(targetEntity: ProfilCoach::class, inversedBy: 'utilisateurs')]
+    private Collection $favorisCoachs;
+
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\ManyToMany(targetEntity: Seance::class, inversedBy: 'utilisateurs')]
+    private Collection $favorisSeances;
+
+    public function __construct()
+    {
+        $this->salles = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+        $this->favorisSalles = new ArrayCollection();
+        $this->favorisCoachs = new ArrayCollection();
+        $this->favorisSeances = new ArrayCollection();
+    }
 
     use Timestampable;
 
@@ -210,6 +258,168 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(?Role $role): static
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Salle>
+     */
+    public function getSalles(): Collection
+    {
+        return $this->salles;
+    }
+
+    public function addSalle(Salle $salle): static
+    {
+        if (!$this->salles->contains($salle)) {
+            $this->salles->add($salle);
+            $salle->setGestionnaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSalle(Salle $salle): static
+    {
+        if ($this->salles->removeElement($salle)) {
+            // set the owning side to null (unless already changed)
+            if ($salle->getGestionnaire() === $this) {
+                $salle->setGestionnaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): static
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): static
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getUtilisateur() === $this) {
+                $reservation->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getUtilisateur() === $this) {
+                $avi->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Salle>
+     */
+    public function getFavorisSalles(): Collection
+    {
+        return $this->favorisSalles;
+    }
+
+    public function addFavorisSalle(Salle $favorisSalle): static
+    {
+        if (!$this->favorisSalles->contains($favorisSalle)) {
+            $this->favorisSalles->add($favorisSalle);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorisSalle(Salle $favorisSalle): static
+    {
+        $this->favorisSalles->removeElement($favorisSalle);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProfilCoach>
+     */
+    public function getFavorisCoachs(): Collection
+    {
+        return $this->favorisCoachs;
+    }
+
+    public function addFavorisCoach(ProfilCoach $favorisCoach): static
+    {
+        if (!$this->favorisCoachs->contains($favorisCoach)) {
+            $this->favorisCoachs->add($favorisCoach);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorisCoach(ProfilCoach $favorisCoach): static
+    {
+        $this->favorisCoachs->removeElement($favorisCoach);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getFavorisSeances(): Collection
+    {
+        return $this->favorisSeances;
+    }
+
+    public function addFavorisSeance(Seance $favorisSeance): static
+    {
+        if (!$this->favorisSeances->contains($favorisSeance)) {
+            $this->favorisSeances->add($favorisSeance);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorisSeance(Seance $favorisSeance): static
+    {
+        $this->favorisSeances->removeElement($favorisSeance);
 
         return $this;
     }
