@@ -46,10 +46,24 @@ class ProfilCoach
     #[ORM\ManyToMany(targetEntity: Salle::class, inversedBy: 'profilCoaches')]
     private Collection $salles;
 
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'profilCoach')]
+    private Collection $seances;
+
+    /**
+     * @var Collection<int, Disponibilite>
+     */
+    #[ORM\OneToMany(targetEntity: Disponibilite::class, mappedBy: 'profilCoach')]
+    private Collection $disponibilites;
+
     public function __construct()
     {
         $this->horaireCoaches = new ArrayCollection();
         $this->salles = new ArrayCollection();
+        $this->seances = new ArrayCollection();
+        $this->disponibilites = new ArrayCollection();
     }
 
     use Timestampable;
@@ -169,6 +183,66 @@ class ProfilCoach
     public function removeSalle(Salle $salle): static
     {
         $this->salles->removeElement($salle);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeances(): Collection
+    {
+        return $this->seances;
+    }
+
+    public function addSeance(Seance $seance): static
+    {
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setProfilCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): static
+    {
+        if ($this->seances->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getProfilCoach() === $this) {
+                $seance->setProfilCoach(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): Collection
+    {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static
+    {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setProfilCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static
+    {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getProfilCoach() === $this) {
+                $disponibilite->setProfilCoach(null);
+            }
+        }
 
         return $this;
     }

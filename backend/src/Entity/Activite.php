@@ -30,9 +30,16 @@ class Activite
     #[ORM\ManyToMany(targetEntity: Salle::class, mappedBy: 'activites')]
     private Collection $salles;
 
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'activite')]
+    private Collection $seances;
+
     public function __construct()
     {
         $this->salles = new ArrayCollection();
+        $this->seances = new ArrayCollection();
     }
 
     use Timestampable;
@@ -88,6 +95,36 @@ class Activite
     {
         if ($this->salles->removeElement($salle)) {
             $salle->removeActivite($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeances(): Collection
+    {
+        return $this->seances;
+    }
+
+    public function addSeance(Seance $seance): static
+    {
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setActivite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): static
+    {
+        if ($this->seances->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getActivite() === $this) {
+                $seance->setActivite(null);
+            }
         }
 
         return $this;

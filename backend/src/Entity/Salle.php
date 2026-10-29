@@ -67,6 +67,18 @@ class Salle
     #[ORM\ManyToMany(targetEntity: ProfilCoach::class, mappedBy: 'salles')]
     private Collection $profilCoaches;
 
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'salle')]
+    private Collection $seances;
+
+    /**
+     * @var Collection<int, Disponibilite>
+     */
+    #[ORM\OneToMany(targetEntity: Disponibilite::class, mappedBy: 'salle')]
+    private Collection $disponibilites;
+
     public function __construct()
     {
         $this->equipements = new ArrayCollection();
@@ -74,6 +86,8 @@ class Salle
         $this->horaireSalles = new ArrayCollection();
         $this->photoSalles = new ArrayCollection();
         $this->profilCoaches = new ArrayCollection();
+        $this->seances = new ArrayCollection();
+        $this->disponibilites = new ArrayCollection();
     }
 
     use Timestampable;
@@ -285,6 +299,66 @@ class Salle
     {
         if ($this->profilCoaches->removeElement($profilCoach)) {
             $profilCoach->removeSalle($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeances(): Collection
+    {
+        return $this->seances;
+    }
+
+    public function addSeance(Seance $seance): static
+    {
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setSalle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): static
+    {
+        if ($this->seances->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getSalle() === $this) {
+                $seance->setSalle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): Collection
+    {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static
+    {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setSalle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static
+    {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getSalle() === $this) {
+                $disponibilite->setSalle(null);
+            }
         }
 
         return $this;
