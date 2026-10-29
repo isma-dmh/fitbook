@@ -58,12 +58,26 @@ class ProfilCoach
     #[ORM\OneToMany(targetEntity: Disponibilite::class, mappedBy: 'profilCoach')]
     private Collection $disponibilites;
 
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'profilCoach')]
+    private Collection $avis;
+
+    /**
+     * @var Collection<int, Utilisateur>
+     */
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'favorisCoachs')]
+    private Collection $utilisateurs;
+
     public function __construct()
     {
         $this->horaireCoaches = new ArrayCollection();
         $this->salles = new ArrayCollection();
         $this->seances = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
+        $this->avis = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
     use Timestampable;
@@ -242,6 +256,63 @@ class ProfilCoach
             if ($disponibilite->getProfilCoach() === $this) {
                 $disponibilite->setProfilCoach(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setProfilCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getProfilCoach() === $this) {
+                $avi->setProfilCoach(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): static
+    {
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->addFavorisCoach($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): static
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            $utilisateur->removeFavorisCoach($this);
         }
 
         return $this;
