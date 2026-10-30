@@ -60,7 +60,7 @@ final class PasswordResetController extends AbstractController
         EntityManagerInterface $em,
     ): JsonResponse {
         $data = $request->toArray();
-        $violations = $validator->validate($data, new Assert\Collection([
+        $violations = $validator->validate($data, new Assert\Collection(fields:[
             'token'    => [new Assert\Type('string'), new Assert\NotBlank()],
             'password' => [new Assert\Type('string'), new Assert\NotBlank(), new Assert\Length(min: 8)],
         ]));

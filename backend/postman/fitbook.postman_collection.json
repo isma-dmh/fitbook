@@ -1,0 +1,302 @@
+{
+  "info": {
+    "_postman_id": "3c4ecc5f-9928-4f7a-866d-c616279c5213",
+    "name": "fitbook",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56653873",
+    "_collection_link": "https://go.postman.co/collection/56653873-3c4ecc5f-9928-4f7a-866d-c616279c5213?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login : statut 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Login : un token est renvoyé\", () => pm.expect(pm.response.json().token).to.be.a(\"string\"));\r\npm.environment.set(\"token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"{{email}}\", \"password\": \"{{password}}\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/login_check",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "login_check"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Activites",
+      "item": [
+        {
+          "name": "Creer activite",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Création : 201\", () => pm.response.to.have.status(201));\r\npm.environment.set(\"activiteId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/ld+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nom\": \"Yoga\", \"description\": \"Séance de yoga\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/activites",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "activites"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lister activites",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Liste : 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/ld+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/activites",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "activites"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lire activite",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Lecture : 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/ld+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/activites/{{activiteId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "activites",
+                "{{activiteId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modifier activite",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Modification : 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Nom modifié\", () => pm.expect(pm.response.json().nom).to.eql(\"Yoga doux\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nom\": \"Yoga doux\", \"description\": \"Séance de yoga\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/activites/{{activiteId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "activites",
+                "{{activiteId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer activite",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Suppression : 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/ld+json",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/activites/{{activiteId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "activites",
+                "{{activiteId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

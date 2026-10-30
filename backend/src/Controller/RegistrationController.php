@@ -39,12 +39,12 @@ final class RegistrationController extends AbstractController
     ): JsonResponse {
         $data = $request->toArray();
 
-        $violations = $validator->validate($data, new Assert\Collection([
+        $violations = $validator->validate($data, new Assert\Collection(fields:[
             'email'    => [new Assert\Type('string'), new Assert\NotBlank(), new Assert\Email()],
             'password' => [new Assert\Type('string'), new Assert\NotBlank(), new Assert\Length(min: 8)],
             'nom'      => [new Assert\Type('string'), new Assert\NotBlank()],
             'prenom'   => [new Assert\Type('string'), new Assert\NotBlank()],
-            'role'     => [new Assert\Type('string'), new Assert\Choice(['sportif', 'coach', 'salle'])],
+            'role'     => [new Assert\Type('string'), new Assert\Choice(choices: ['sportif', 'coach', 'salle'])],
         ]));
         if (count($violations) > 0) {
             $errors = [];
@@ -128,7 +128,7 @@ final class RegistrationController extends AbstractController
     ): JsonResponse {
         $data = $request->toArray();
 
-        $violations = $validator->validate($data, new Assert\Collection([
+        $violations = $validator->validate($data, new Assert\Collection(fields:[
             'email' => [new Assert\Type('string'), new Assert\NotBlank(), new Assert\Email()],
         ]));
         if (count($violations) > 0) {
