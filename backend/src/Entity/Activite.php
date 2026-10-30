@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Traits\Timestampable;
 use App\Repository\ActiviteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ActiviteRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource]
 class Activite
 {
     #[ORM\Id]

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Entity\Traits\Timestampable;
 use App\Repository\DisponibiliteRepository;
 use Doctrine\DBAL\Types\Types;
@@ -9,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DisponibiliteRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource]
 class Disponibilite
 {
     #[ORM\Id]

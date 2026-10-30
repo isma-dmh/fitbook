@@ -8,9 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
 #[ORM\Entity(repositoryClass: ProfilCoachRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource]
 class ProfilCoach
 {
     #[ORM\Id]

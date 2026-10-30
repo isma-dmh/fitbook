@@ -6,9 +6,11 @@ use App\Entity\Traits\Timestampable;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ApiResource]
 class Reservation
 {
     #[ORM\Id]

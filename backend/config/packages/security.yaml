@@ -45,6 +45,9 @@ security:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth, roles: PUBLIC_ACCESS }
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
+        - { path: '^/api/?$', roles: PUBLIC_ACCESS }
+        - { path: '^/api/(me|admin|reservations|utilisateurs)(/|$)', roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
