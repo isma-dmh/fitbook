@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PhotoSalleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PhotoSalleRepository::class)]
+#[ApiResource]
 class PhotoSalle
 {
     #[ORM\Id]
