@@ -3,14 +3,28 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Entity\Traits\Timestampable;
 use App\Repository\DisponibiliteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: DisponibiliteRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(denormalizationContext: ['groups' => ['write']], operations: [
+    new GetCollection(),
+    new Get(),
+    new Post(securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+    new Put(security: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))", securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+    new Patch(security: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))", securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+    new Delete(security: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+])]
 class Disponibilite
 {
     #[ORM\Id]
@@ -19,21 +33,27 @@ class Disponibilite
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['write'])]
     private ?\DateTimeImmutable $dateDispo = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
+    #[Groups(['write'])]
     private ?\DateTimeImmutable $heureDebut = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
+    #[Groups(['write'])]
     private ?\DateTimeImmutable $heureFin = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['write'])]
     private ?string $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'disponibilites')]
+    #[Groups(['write'])]
     private ?ProfilCoach $profilCoach = null;
 
     #[ORM\ManyToOne(inversedBy: 'disponibilites')]
+    #[Groups(['write'])]
     private ?Salle $salle = null;
 
     use Timestampable;

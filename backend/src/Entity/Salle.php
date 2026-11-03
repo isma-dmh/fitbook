@@ -8,47 +8,71 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\State\UtilisateurConnecteProcessor;
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(denormalizationContext: ['groups' => ['write']], normalizationContext: ['groups' => ['public:read']], operations: [
+    new GetCollection(),
+    new Get(),
+    new Post(security: "is_granted('ROLE_SALLE') or is_granted('ROLE_ADMINISTRATEUR')", processor: UtilisateurConnecteProcessor::class),
+    new Put(security: "is_granted('ROLE_ADMINISTRATEUR') or (object.getGestionnaire() == user)", securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or (object.getGestionnaire() == user)"),
+    new Patch(security: "is_granted('ROLE_ADMINISTRATEUR') or (object.getGestionnaire() == user)", securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or (object.getGestionnaire() == user)"),
+    new Delete(security: "is_granted('ROLE_ADMINISTRATEUR') or (object.getGestionnaire() == user)"),
+])]
 class Salle
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['public:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['public:read', 'write'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['public:read', 'write'])]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['public:read', 'write'])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['public:read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['public:read', 'write'])]
     private ?int $capaciteMax = null;
 
     #[ORM\ManyToOne(inversedBy: 'salles')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['public:read'])]
     private ?Utilisateur $gestionnaire = null;
 
     /**
      * @var Collection<int, Equipement>
      */
     #[ORM\ManyToMany(targetEntity: Equipement::class, inversedBy: 'salles')]
+    #[Groups(['public:read', 'write'])]
     private Collection $equipements;
 
     /**
      * @var Collection<int, Activite>
      */
     #[ORM\ManyToMany(targetEntity: Activite::class, inversedBy: 'salles')]
+    #[Groups(['public:read', 'write'])]
     private Collection $activites;
 
     /**
