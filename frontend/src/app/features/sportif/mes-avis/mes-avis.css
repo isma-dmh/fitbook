@@ -1,0 +1,11 @@
+.carte-avis p {
+  margin: .25rem 0 0;
+}
+
+.avis-tete {
+  display: flex; justify-content: space-between; gap: 8px;
+}
+
+.etoiles {
+  color: #f5a623;
+}

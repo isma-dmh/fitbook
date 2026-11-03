@@ -1,0 +1,27 @@
+<div class="container">
+  <h1>Mes favoris</h1>
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Impossible de charger vos favoris.</p>
+  } @else if (!vue()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <section class="bloc">
+      <h2>Salles</h2>
+      @if (salles().length) {
+        <div class="grille grille-4">@for (s of salles(); track s.id) { <app-carte-salle [salle]="s" [vue]="vue()!" /> }</div>
+      } @else { <p class="muted">Aucune salle en favori.</p> }
+    </section>
+    <section class="bloc">
+      <h2>Coachs</h2>
+      @if (coachs().length) {
+        <div class="grille grille-3">@for (c of coachs(); track c.id) { <app-carte-coach [coach]="c" [vue]="vue()!" /> }</div>
+      } @else { <p class="muted">Aucun coach en favori.</p> }
+    </section>
+    <section class="bloc">
+      <h2>Séances</h2>
+      @if (seances().length) {
+        <div class="liste">@for (s of seances(); track s.id) { <app-ligne-seance [seance]="s" [vue]="vue()!" /> }</div>
+      } @else { <p class="muted">Aucune séance en favori.</p> }
+    </section>
+  }
+</div>
