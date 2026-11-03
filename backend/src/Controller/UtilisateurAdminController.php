@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Utilisateur;
+use App\Repository\RoleRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,7 @@ final class UtilisateurAdminController extends AbstractController
     }
 
     #[Route('/{id<\d+>}', name: 'api_utilisateurs_modifier', methods: ['PATCH'])]
-    public function modifier(Utilisateur $utilisateur, Request $request, EntityManagerInterface $em): JsonResponse
+    public function modifier(Utilisateur $utilisateur, Request $request, EntityManagerInterface $em, RoleRepository $roles): JsonResponse
     {
         $donnees = $request->toArray();
         if (array_key_exists('actif', $donnees)) {
@@ -42,6 +43,26 @@ final class UtilisateurAdminController extends AbstractController
                 return new JsonResponse(['message' => 'Vous ne pouvez pas désactiver votre propre compte.'], 422);
             }
             $utilisateur->setActif($donnees['actif']);
+        }
+        foreach (['nom' => 'setNom', 'prenom' => 'setPrenom'] as $champ => $setter) {
+            if (!array_key_exists($champ, $donnees)) {
+                continue;
+            }
+            $valeur = is_string($donnees[$champ]) ? trim($donnees[$champ]) : '';
+            if ('' === $valeur || mb_strlen($valeur) > 255) {
+                return new JsonResponse(['message' => "Le champ $champ doit contenir entre 1 et 255 caractères."], 422);
+            }
+            $utilisateur->$setter($valeur);
+        }
+        if (array_key_exists('role', $donnees)) {
+            $role = is_string($donnees['role']) ? $roles->findOneBy(['libelle' => $donnees['role']]) : null;
+            if (!$role) {
+                return new JsonResponse(['message' => 'Rôle inconnu (sportif, coach, salle ou administrateur).'], 422);
+            }
+            if ($utilisateur === $this->getUser() && $role !== $utilisateur->getRole()) {
+                return new JsonResponse(['message' => 'Vous ne pouvez pas modifier votre propre rôle.'], 422);
+            }
+            $utilisateur->setRole($role);
         }
         $em->flush();
 
