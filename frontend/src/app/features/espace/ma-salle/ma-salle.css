@@ -1,0 +1,23 @@
+.galerie-mini {
+  display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;
+}
+
+.galerie-mini img {
+  width: 84px; height: 64px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent;
+}
+
+.galerie-mini.grande img {
+  width: 140px; height: 100px;
+}
+
+.photo-edition {
+  position: relative;
+}
+
+.ajout-ligne {
+  display: flex; gap: 8px; margin-top: .75rem;
+}
+
+.cases {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}

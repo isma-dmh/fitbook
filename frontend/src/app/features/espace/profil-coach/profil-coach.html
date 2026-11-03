@@ -1,0 +1,36 @@
+<h1>{{ ctx.profilCoach() ? 'Mon profil professionnel' : 'Créer mon profil professionnel' }}</h1>
+<form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate class="formulaire">
+  <div class="champ">
+    <label for="presentation">Présentation</label>
+    <textarea id="presentation" class="input" rows="5" formControlName="presentation"></textarea>
+    @if (invalide('presentation')) { <p class="erreur">La présentation est obligatoire.</p> }
+  </div>
+  <div class="champ">
+    <label for="specialites">Spécialités</label>
+    <input id="specialites" class="input" formControlName="specialites" placeholder="Yoga, Pilates…" />
+    @if (invalide('specialites')) { <p class="erreur">Indiquez au moins une spécialité.</p> }
+  </div>
+  <div class="deux-col">
+    <div class="champ">
+      <label for="tarif">Tarif horaire (€)</label>
+      <input id="tarif" type="number" min="0" step="0.5" class="input" formControlName="tarifHoraire" />
+      @if (invalide('tarifHoraire')) { <p class="erreur">Indiquez un tarif positif.</p> }
+    </div>
+    <div class="champ">
+      <label for="ville">Ville</label>
+      <input id="ville" class="input" formControlName="ville" />
+      @if (invalide('ville')) { <p class="erreur">La ville est obligatoire.</p> }
+    </div>
+  </div>
+  <fieldset class="champ">
+    <legend>Salles où j'interviens</legend>
+    <div class="cases">
+      @for (s of salles(); track s.id) {
+        <label class="case"><input type="checkbox" [checked]="choisies().includes(s['@id']!)" (change)="basculer(s['@id']!)" /> {{ s.nom }}</label>
+      } @empty { <span class="muted">Aucune salle disponible.</span> }
+    </div>
+  </fieldset>
+  @if (message()) { <p class="alerte ok" role="status">{{ message() }}</p> }
+  @if (erreur()) { <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p> }
+  <button type="submit" class="btn btn-primary" [disabled]="envoi()">Enregistrer</button>
+</form>

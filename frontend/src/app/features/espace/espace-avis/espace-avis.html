@@ -1,0 +1,9 @@
+<h1>Avis reçus</h1>
+@if (!cible()) {
+  <div class="vide"><p>Créez d'abord {{ espace === 'coach' ? 'votre profil professionnel' : 'votre salle' }}.</p></div>
+} @else if (!vue()) {
+  <p class="muted">Chargement…</p>
+} @else {
+  @if (note() !== null) { <p>Note moyenne : <strong>{{ note()!.toFixed(1) }} / 5</strong> ({{ avis().length }} avis)</p> }
+  <app-avis-liste [avis]="avis()" vide="Aucun avis reçu pour le moment." />
+}

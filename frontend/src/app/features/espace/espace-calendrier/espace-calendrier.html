@@ -1,0 +1,8 @@
+<h1>Calendrier</h1>
+@if (!cible()) {
+  <div class="vide"><p>Créez d'abord {{ espace === 'coach' ? 'votre profil professionnel' : 'votre salle' }}.</p></div>
+} @else if (!vue()) {
+  <p class="muted">Chargement…</p>
+} @else {
+  <app-calendrier [evenements]="evenements()" />
+}

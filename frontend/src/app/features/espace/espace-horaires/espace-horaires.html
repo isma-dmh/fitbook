@@ -1,0 +1,36 @@
+<h1>{{ espace === 'salle' ? "Horaires d'ouverture" : 'Horaires hebdomadaires' }}</h1>
+@if (!cible()) {
+  <div class="vide"><p>Créez d'abord {{ espace === 'coach' ? 'votre profil professionnel' : 'votre salle' }}.</p></div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="ajouter()" class="formulaire carte" novalidate>
+    <div class="trois-col">
+      <div class="champ">
+        <label for="jour">Jour</label>
+        <select id="jour" class="input" formControlName="jourSemaine">
+          @for (j of jours; track $index) { <option [value]="$index + 1">{{ j }}</option> }
+        </select>
+      </div>
+      <div class="champ">
+        <label for="debut">{{ espace === 'salle' ? 'Ouverture' : 'Début' }}</label>
+        <input id="debut" type="time" class="input" formControlName="debut" />
+      </div>
+      <div class="champ">
+        <label for="fin">{{ espace === 'salle' ? 'Fermeture' : 'Fin' }}</label>
+        <input id="fin" type="time" class="input" formControlName="fin" />
+      </div>
+    </div>
+    @if (erreurForm()) { <p class="alerte erreur-bloc" role="alert">{{ erreurForm() }}</p> }
+    <div class="actions"><button type="submit" class="btn btn-primary" [disabled]="form.invalid">Ajouter</button></div>
+  </form>
+  <div class="liste">
+    @for (h of lignes(); track h.id) {
+      <div class="ligne-seance">
+        <div class="ligne-seance-infos">
+          <strong>{{ jours[h.jour - 1] }}</strong>
+          <span class="muted">{{ heure(h.debut) }} – {{ heure(h.fin) }}</span>
+        </div>
+        <div class="ligne-seance-actions"><button type="button" class="btn btn-sm btn-danger" (click)="supprimer(h.iri)">Supprimer</button></div>
+      </div>
+    } @empty { <div class="vide"><p>Aucun horaire défini.</p></div> }
+  </div>
+}

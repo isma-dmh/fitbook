@@ -1,0 +1,38 @@
+<h1>Disponibilités et blocages</h1>
+@if (!cible()) {
+  <div class="vide"><p>Créez d'abord {{ espace === 'coach' ? 'votre profil professionnel' : 'votre salle' }}.</p></div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="ajouter()" class="formulaire carte" novalidate>
+    <div class="deux-col">
+      <div class="champ">
+        <label for="d">Date</label>
+        <input id="d" type="date" class="input" formControlName="dateDispo" />
+      </div>
+      <div class="champ">
+        <label for="t">Type</label>
+        <select id="t" class="input" formControlName="type">
+          <option value="disponible">Disponible</option>
+          <option value="bloque">Bloqué (indisponible)</option>
+        </select>
+      </div>
+    </div>
+    <div class="deux-col">
+      <div class="champ"><label for="h1">De</label><input id="h1" type="time" class="input" formControlName="heureDebut" /></div>
+      <div class="champ"><label for="h2">À</label><input id="h2" type="time" class="input" formControlName="heureFin" /></div>
+    </div>
+    @if (erreurForm()) { <p class="alerte erreur-bloc" role="alert">{{ erreurForm() }}</p> }
+    <div class="actions"><button type="submit" class="btn btn-primary" [disabled]="form.invalid">Ajouter</button></div>
+  </form>
+  <div class="liste">
+    @for (d of mesDispos(); track d.id) {
+      <div class="ligne-seance">
+        <div class="ligne-seance-infos">
+          <strong>{{ jourFr(d.dateDispo) }}</strong>
+          <span class="muted">{{ heure(d.heureDebut) }} – {{ heure(d.heureFin) }}</span>
+          <span class="etat" [class.complet]="d.type === 'bloque'">{{ d.type === 'bloque' ? 'Bloqué' : 'Disponible' }}</span>
+        </div>
+        <div class="ligne-seance-actions"><button type="button" class="btn btn-sm btn-danger" (click)="supprimer(iriDe(d))">Supprimer</button></div>
+      </div>
+    } @empty { <div class="vide"><p>Aucune disponibilité enregistrée.</p></div> }
+  </div>
+}

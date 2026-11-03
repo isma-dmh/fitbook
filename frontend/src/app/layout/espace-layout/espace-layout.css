@@ -1,0 +1,66 @@
+.logo {
+  font-weight: 800; font-size: 1.25rem; color: var(--accent);
+}
+
+.logo:hover {
+  text-decoration: none;
+}
+
+.utilisateur {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--texte);
+}
+
+.avatar {
+  display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-clair); color: var(--accent); font-weight: 700; font-size: .8rem;
+}
+
+.espace {
+  display: grid; grid-template-columns: 240px 1fr; min-height: 100vh;
+}
+
+.barre {
+  position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; padding: 20px 14px; background: var(--surface); border-right: 1px solid var(--bord);
+}
+
+.barre-nav {
+  display: flex; flex-direction: column; gap: 2px; margin-top: 8px; flex: 1; overflow-y: auto;
+}
+
+.barre-nav a {
+  padding: .5rem .75rem; border-radius: 8px; color: var(--texte);
+}
+
+.barre-nav a:hover {
+  background: #f0f0ed; text-decoration: none;
+}
+
+.barre-nav a.actif {
+  background: var(--accent-clair); color: var(--accent); font-weight: 600;
+}
+
+.barre-bas {
+  display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px solid var(--bord);
+}
+
+.espace-contenu {
+  padding: 28px 32px 48px; min-width: 0;
+}
+
+.selecteur-salle {
+  max-width: 280px; margin-bottom: 1rem;
+}
+
+@media (max-width: 760px) {
+  .espace {
+    grid-template-columns: 1fr;
+  }
+  .barre {
+    position: static; height: auto;
+  }
+  .barre-nav {
+    flex-direction: row; flex-wrap: wrap;
+  }
+  .espace-contenu {
+    padding: 20px 16px 40px;
+  }
+}
