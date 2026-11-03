@@ -1,0 +1,33 @@
+<h1>{{ espace === 'coach' ? 'Espace coach' : 'Espace salle' }}</h1>
+@if (!cible()) {
+  <div class="vide">
+    <p>{{ espace === 'coach' ? "Vous n'avez pas encore de profil professionnel." : "Vous n'avez pas encore de salle." }}</p>
+    <a class="btn btn-primary" [routerLink]="espace === 'coach' ? '/coach/profil' : '/salle/ma-salle'">{{ espace === 'coach' ? 'Créer mon profil' : 'Créer ma salle' }}</a>
+  </div>
+} @else if (erreur()) {
+  <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p>
+} @else if (!vue()) {
+  <p class="muted">Chargement…</p>
+} @else {
+  <div class="stats">
+    <div class="stat"><strong>{{ prochaines().length }}</strong><span>Séances à venir</span></div>
+    <div class="stat"><strong>{{ inscrits() }}</strong><span>Réservations</span></div>
+    <div class="stat"><strong>{{ noteTexte() }}</strong><span>Note moyenne</span></div>
+  </div>
+  <div class="entete-bloc"><h2>Prochaines séances</h2><a [routerLink]="base() + '/seances'">Voir tout</a></div>
+  <div class="liste">
+    @for (s of prochaines().slice(0, 4); track s.id) {
+      <div class="ligne-seance">
+        <div class="ligne-seance-infos">
+          <strong>{{ vue()!.nomActivite(s.activite) }} · {{ jour(s.dateSeance) }}</strong>
+          <span class="muted">{{ heure(s.heureDebut) }} · {{ s.dureeMinutes }} min</span>
+        </div>
+        <span class="muted">{{ s.capacite - vue()!.places(s) }} / {{ s.capacite }} inscrits</span>
+      </div>
+    } @empty { <p class="muted">Aucune séance programmée.</p> }
+  </div>
+  <div class="actions">
+    <a class="btn btn-primary" [routerLink]="base() + '/seances'" [queryParams]="{ nouvelle: 1 }">Créer une séance</a>
+    <a class="btn" [routerLink]="espace === 'coach' ? '/coach/profil' : '/salle/ma-salle'">{{ espace === 'coach' ? 'Modifier mon profil' : 'Modifier ma salle' }}</a>
+  </div>
+}

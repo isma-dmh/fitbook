@@ -1,0 +1,35 @@
+<div class="espace">
+  <aside class="barre">
+    <a routerLink="/" class="logo">FitBook</a>
+    <p class="muted petit">{{ titre() }}</p>
+    <nav class="barre-nav">
+      @for (l of liens(); track l.chemin) {
+        <a [routerLink]="l.chemin" routerLinkActive="actif" [routerLinkActiveOptions]="{ exact: !!l.exact }">{{ l.libelle }}</a>
+      }
+    </nav>
+    <div class="barre-bas">
+      <a routerLink="/">← Retour au site</a>
+      <a routerLink="/compte" class="utilisateur">
+        <span class="avatar">{{ lettres() }}</span><span>{{ auth.nomAffiche() }}</span>
+      </a>
+      <button type="button" class="btn btn-sm" (click)="auth.deconnexion()">Déconnexion</button>
+    </div>
+  </aside>
+  <section class="espace-contenu">
+    @if (espace() === 'salle' && ctx.sallesGerees().length > 1) {
+      <div class="selecteur-salle">
+        <label for="salle-courante" class="muted petit">Salle</label>
+        <select id="salle-courante" class="input" [value]="ctx.salleCourante()?.id" (change)="changerSalle($event)">
+          @for (s of ctx.sallesGerees(); track s.id) {
+            <option [value]="s.id">{{ s.nom }}</option>
+          }
+        </select>
+      </div>
+    }
+    @if (pret()) {
+      <router-outlet />
+    } @else {
+      <p class="muted">Chargement…</p>
+    }
+  </section>
+</div>

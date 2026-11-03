@@ -1,0 +1,91 @@
+<div class="entete-bloc">
+  <h1>Séances</h1>
+  @if (cible() && !formulaire()) { <button type="button" class="btn btn-primary" (click)="ouvrir(null)">Créer une séance</button> }
+</div>
+
+@if (!cible()) {
+  <div class="vide"><p>Créez d'abord {{ espace === 'coach' ? 'votre profil professionnel' : 'votre salle' }}.</p></div>
+} @else {
+  @if (formulaire()) {
+    <form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate class="formulaire carte">
+      <h2>{{ edition() ? 'Modifier la séance' : 'Nouvelle séance' }}</h2>
+      <div class="champ">
+        <label for="activite">Activité</label>
+        <select id="activite" class="input" formControlName="activite">
+          <option value="">Choisir…</option>
+          @for (a of vue() ? vue()!.d.activites : []; track a.id) { <option [value]="a['@id']">{{ a.nom }}</option> }
+        </select>
+        @if (invalide('activite')) { <p class="erreur">Choisissez une activité.</p> }
+      </div>
+      @if (espace === 'coach') {
+        <div class="champ">
+          <label for="lieu">Salle (facultatif)</label>
+          <select id="lieu" class="input" formControlName="salle">
+            <option value="">Aucune</option>
+            @for (s of sallesPossibles(); track s.id) { <option [value]="s['@id']">{{ s.nom }}</option> }
+          </select>
+        </div>
+      }
+      <div class="deux-col">
+        <div class="champ">
+          <label for="date">Date</label>
+          <input id="date" type="date" class="input" formControlName="date" />
+          @if (invalide('date')) { <p class="erreur">La date est obligatoire.</p> }
+        </div>
+        <div class="champ">
+          <label for="heure">Heure</label>
+          <input id="heure" type="time" class="input" formControlName="heure" />
+          @if (invalide('heure')) { <p class="erreur">L'heure est obligatoire.</p> }
+        </div>
+      </div>
+      <div class="trois-col">
+        <div class="champ">
+          <label for="duree">Durée (min)</label>
+          <input id="duree" type="number" min="5" step="5" class="input" formControlName="dureeMinutes" />
+        </div>
+        <div class="champ">
+          <label for="capacite">Capacité</label>
+          <input id="capacite" type="number" min="1" class="input" formControlName="capacite" />
+          @if (capaciteSalle() !== null) { <p class="aide-champ">Maximum de la salle : {{ capaciteSalle() }}.</p> }
+        </div>
+        <div class="champ">
+          <label for="prix">Prix (€)</label>
+          <input id="prix" type="number" min="0" step="0.5" class="input" formControlName="prix" />
+        </div>
+      </div>
+      <div class="champ">
+        <label for="statut">Statut</label>
+        <select id="statut" class="input" formControlName="statut">
+          <option value="planifiee">Planifiée</option>
+          <option value="annulee">Annulée</option>
+        </select>
+      </div>
+      @if (erreurForm()) { <p class="alerte erreur-bloc" role="alert">{{ erreurForm() }}</p> }
+      <div class="actions">
+        <button type="submit" class="btn btn-primary" [disabled]="envoi()">Enregistrer</button>
+        <button type="button" class="btn" (click)="fermer()">Annuler</button>
+      </div>
+    </form>
+  }
+
+  @if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
+  @if (!vue()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <div class="liste">
+      @for (s of mesSeances(); track s.id) {
+        <div class="ligne-seance">
+          <div class="ligne-seance-infos">
+            <strong>{{ vue()!.nomActivite(s.activite) }} · {{ jourFr(s.dateSeance) }} {{ heure(s.heureDebut) }}</strong>
+            <span class="muted">{{ s.dureeMinutes }} min · {{ prix(s.prix) }} · {{ s.capacite - vue()!.places(s) }} / {{ s.capacite }} inscrits</span>
+            @if (s.statut === 'annulee') { <span class="etat complet">Annulée</span> } @else if (passee(s)) { <span class="etat">Passée</span> }
+          </div>
+          <div class="ligne-seance-actions">
+            <button type="button" class="btn btn-sm" (click)="ouvrir(s)">Modifier</button>
+            <button type="button" class="btn btn-sm btn-danger" (click)="supprimer(s)">Supprimer</button>
+          </div>
+        </div>
+      } @empty { <div class="vide"><p>Aucune séance pour le moment.</p></div> }
+    </div>
+  }
+}

@@ -1,0 +1,22 @@
+<h1>Réservations</h1>
+@if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
+@if (!cible()) {
+  <div class="vide"><p>Créez d'abord {{ espace === 'coach' ? 'votre profil professionnel' : 'votre salle' }}.</p></div>
+} @else if (!vue() || !reservations()) {
+  <p class="muted">Chargement…</p>
+} @else {
+  <div class="liste">
+    @for (r of lignes(); track r.id) {
+      <div class="ligne-seance">
+        <div class="ligne-seance-infos">
+          <strong>{{ nomComplet(r.utilisateur) || 'Sportif' }}</strong>
+          <span class="muted">{{ vue()!.nomActivite(r.seanceObj?.activite) }} · {{ jourFr(r.seanceObj?.dateSeance) }} {{ heure(r.seanceObj?.heureDebut) }}</span>
+          <span class="etat" [class.complet]="r.statut === 'annulee'">{{ r.statut === 'annulee' ? 'Annulée' : 'Confirmée' }}</span>
+        </div>
+        @if (r.statut !== 'annulee') {
+          <div class="ligne-seance-actions"><button type="button" class="btn btn-sm btn-danger" (click)="annuler(r)">Annuler</button></div>
+        }
+      </div>
+    } @empty { <div class="vide"><p>Aucune réservation pour le moment.</p></div> }
+  </div>
+}

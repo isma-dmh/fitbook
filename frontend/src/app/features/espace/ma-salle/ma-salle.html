@@ -1,0 +1,72 @@
+<div class="entete-bloc">
+  <h1>{{ creation() ? 'Nouvelle salle' : 'Ma salle' }}</h1>
+  @if (!creation() && ctx.salleCourante()) {
+    <button type="button" class="btn btn-sm" (click)="nouvelle()">Ajouter une autre salle</button>
+  } @else if (creation() && ctx.salleCourante()) {
+    <button type="button" class="btn btn-sm" (click)="creation.set(false)">Annuler</button>
+  }
+</div>
+<form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate class="formulaire">
+  <div class="champ">
+    <label for="nom">Nom</label>
+    <input id="nom" class="input" formControlName="nom" />
+    @if (invalide('nom')) { <p class="erreur">Le nom est obligatoire.</p> }
+  </div>
+  <div class="deux-col">
+    <div class="champ">
+      <label for="adresse">Adresse</label>
+      <input id="adresse" class="input" formControlName="adresse" />
+      @if (invalide('adresse')) { <p class="erreur">L'adresse est obligatoire.</p> }
+    </div>
+    <div class="champ">
+      <label for="ville">Ville</label>
+      <input id="ville" class="input" formControlName="ville" />
+      @if (invalide('ville')) { <p class="erreur">La ville est obligatoire.</p> }
+    </div>
+  </div>
+  <div class="champ">
+    <label for="description">Description</label>
+    <textarea id="description" class="input" rows="4" formControlName="description"></textarea>
+    @if (invalide('description')) { <p class="erreur">La description est obligatoire.</p> }
+  </div>
+  <div class="champ">
+    <label for="capacite">Capacité maximale</label>
+    <input id="capacite" type="number" min="1" class="input" formControlName="capaciteMax" />
+    @if (invalide('capaciteMax')) { <p class="erreur">Indiquez une capacité d'au moins 1.</p> }
+  </div>
+  <fieldset class="champ">
+    <legend>Activités proposées</legend>
+    <div class="cases">
+      @for (a of vue() ? vue()!.d.activites : []; track a.id) {
+        <label class="case"><input type="checkbox" [checked]="activites().includes(a['@id']!)" (change)="basculer(activites, a['@id']!)" /> {{ a.nom }}</label>
+      }
+    </div>
+  </fieldset>
+  <fieldset class="champ">
+    <legend>Équipements</legend>
+    <div class="cases">
+      @for (e of vue() ? vue()!.d.equipements : []; track e.id) {
+        <label class="case"><input type="checkbox" [checked]="equipements().includes(e['@id']!)" (change)="basculer(equipements, e['@id']!)" /> {{ e.nom }}</label>
+      }
+    </div>
+  </fieldset>
+  @if (message()) { <p class="alerte ok" role="status">{{ message() }}</p> }
+  @if (erreur()) { <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p> }
+  <button type="submit" class="btn btn-primary" [disabled]="envoi()">{{ creation() ? 'Créer la salle' : 'Enregistrer' }}</button>
+</form>
+
+@if (!creation() && ctx.salleCourante(); as salle) {
+  <h2>Photos</h2>
+  <div class="galerie-mini grande">
+    @for (p of photos(); track p.id) {
+      <div class="photo-edition">
+        <img [src]="p.url" alt="" loading="lazy" />
+        <button type="button" class="btn btn-sm btn-danger" (click)="supprimerPhoto(p)">Supprimer</button>
+      </div>
+    } @empty { <p class="muted">Aucune photo.</p> }
+  </div>
+  <div class="ajout-ligne">
+    <input #champ class="input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="choisirPhoto($event)" aria-label="Choisir une photo" />
+    <button type="button" class="btn" (click)="ajouterPhoto(salle['@id']!, champ)" [disabled]="!fichierPhoto() || envoiPhoto()">{{ envoiPhoto() ? 'Envoi…' : 'Ajouter' }}</button>
+  </div>
+}
