@@ -1,0 +1,15 @@
+.aide-champ {
+  font-size: .82rem; color: var(--muted); margin: .25rem 0 0;
+}
+
+.roles {
+  display: grid; gap: 8px;
+}
+
+.choix {
+  display: flex; align-items: center; gap: 10px; padding: .7rem .9rem; border: 1px solid var(--bord); border-radius: 10px; cursor: pointer; background: var(--surface);
+}
+
+.choix.actif {
+  border-color: var(--accent); background: var(--accent-clair);
+}

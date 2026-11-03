@@ -1,0 +1,46 @@
+<div class="carte-auth">
+  <h1>Inscription</h1>
+  @if (reussi()) {
+    <p class="alerte ok" role="status">{{ reussi() }}</p>
+    <p><a routerLink="/connexion" class="btn btn-primary">Aller à la connexion</a></p>
+    <p class="aide"><a routerLink="/renvoyer-confirmation">Je n'ai pas reçu l'email</a></p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="envoyer()" novalidate>
+      <fieldset class="roles">
+        <legend>Je suis</legend>
+        @for (r of roles; track r.valeur) {
+          <label class="choix" [class.actif]="form.controls.role.value === r.valeur">
+            <input type="radio" formControlName="role" [value]="r.valeur" />
+            <span>{{ r.libelle }}</span>
+          </label>
+        }
+      </fieldset>
+      <div class="deux-col">
+        <div class="champ">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" formControlName="prenom" class="input" autocomplete="given-name" />
+          @if (invalide('prenom')) { <p class="erreur">Le prénom est obligatoire.</p> }
+        </div>
+        <div class="champ">
+          <label for="nom">Nom</label>
+          <input id="nom" formControlName="nom" class="input" autocomplete="family-name" />
+          @if (invalide('nom')) { <p class="erreur">Le nom est obligatoire.</p> }
+        </div>
+      </div>
+      <div class="champ">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" class="input" autocomplete="email" />
+        @if (invalide('email')) { <p class="erreur">Saisissez une adresse email valide.</p> }
+      </div>
+      <div class="champ">
+        <label for="mdp">Mot de passe</label>
+        <input id="mdp" type="password" formControlName="password" class="input" autocomplete="new-password" />
+        <p class="aide-champ">8 caractères minimum.</p>
+        @if (invalide('password')) { <p class="erreur">Le mot de passe doit contenir au moins 8 caractères.</p> }
+      </div>
+      @if (erreur()) { <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p> }
+      <button type="submit" class="btn btn-primary btn-bloc" [disabled]="envoi()">{{ envoi() ? 'Création…' : 'Créer mon compte' }}</button>
+    </form>
+    <p class="aide">Déjà inscrit ? <a routerLink="/connexion">Connexion</a></p>
+  }
+</div>

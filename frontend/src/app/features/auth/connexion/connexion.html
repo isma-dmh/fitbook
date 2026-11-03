@@ -1,0 +1,27 @@
+<div class="carte-auth">
+  <h1>Connexion</h1>
+  @if (session) {
+    <p class="alerte info">Votre session a expiré, reconnectez-vous.</p>
+  }
+  <form [formGroup]="form" (ngSubmit)="envoyer()" novalidate>
+    <div class="champ">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" class="input" autocomplete="email" />
+      @if (invalide('email')) { <p class="erreur">Saisissez une adresse email valide.</p> }
+    </div>
+    <div class="champ">
+      <label for="mdp">Mot de passe</label>
+      <input id="mdp" type="password" formControlName="password" class="input" autocomplete="current-password" />
+      @if (invalide('password')) { <p class="erreur">Le mot de passe est obligatoire.</p> }
+    </div>
+    @if (erreur()) {
+      <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p>
+      @if (nonConfirme()) {
+        <p><a routerLink="/renvoyer-confirmation">Renvoyer l'email de confirmation</a></p>
+      }
+    }
+    <button type="submit" class="btn btn-primary btn-bloc" [disabled]="envoi()">{{ envoi() ? 'Connexion…' : 'Se connecter' }}</button>
+  </form>
+  <p class="aide"><a routerLink="/mot-de-passe-oublie">Mot de passe oublié ?</a></p>
+  <p class="aide">Pas encore de compte ? <a routerLink="/inscription">Inscription</a></p>
+</div>

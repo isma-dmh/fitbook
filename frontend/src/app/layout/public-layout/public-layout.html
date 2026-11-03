@@ -1,0 +1,36 @@
+<header class="entete">
+  <div class="container entete-in">
+    <a routerLink="/" class="logo" (click)="menu.set(false)">FitBook</a>
+    <button type="button" class="burger" (click)="menu.update((v) => !v)" [attr.aria-expanded]="menu()" aria-label="Menu">☰</button>
+    <nav class="nav" [class.ouvert]="menu()" (click)="menu.set(false)">
+      <a routerLink="/salles" routerLinkActive="actif">Salles</a>
+      <a routerLink="/coachs" routerLinkActive="actif">Coachs</a>
+      <a routerLink="/seances" routerLinkActive="actif">Séances</a>
+      @if (auth.role() === 'sportif') {
+        <a routerLink="/favoris" routerLinkActive="actif">Favoris</a>
+        <a routerLink="/calendrier" routerLinkActive="actif">Calendrier</a>
+        <a routerLink="/mes-reservations" routerLinkActive="actif">Mes réservations</a>
+      }
+      <span class="nav-sep"></span>
+      @if (auth.estConnecte()) {
+        @if (auth.role() !== 'sportif') {
+          <a [routerLink]="auth.accueilRole()" routerLinkActive="actif">Mon espace</a>
+        }
+        <a routerLink="/compte" class="utilisateur" routerLinkActive="actif">
+          <span>{{ auth.nomAffiche() }}</span>
+          <span class="avatar">{{ lettres() }}</span>
+        </a>
+        <button type="button" class="btn btn-sm" (click)="deconnexion()">Déconnexion</button>
+      } @else {
+        <a routerLink="/connexion" class="btn btn-sm">Connexion</a>
+        <a routerLink="/inscription" class="btn btn-sm btn-primary">Inscription</a>
+      }
+    </nav>
+  </div>
+</header>
+<main class="principal">
+  <router-outlet />
+</main>
+<footer class="pied">
+  <div class="container">© FitBook · Projet UAA MI08</div>
+</footer>
