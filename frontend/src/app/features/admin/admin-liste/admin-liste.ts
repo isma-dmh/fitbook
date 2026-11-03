@@ -170,8 +170,8 @@ export class AdminListe {
     this.charger();
   }
 
-  maj(cle: string, valeur: string) {
-    this.saisie.update((s) => ({ ...s, [cle]: valeur }));
+  maj(cle: string, valeur: string | number | null) {
+    this.saisie.update((s) => ({ ...s, [cle]: String(valeur ?? '') }));
   }
 
   editer(l: any) {
