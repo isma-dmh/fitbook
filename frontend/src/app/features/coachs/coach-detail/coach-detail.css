@@ -1,0 +1,36 @@
+.rond {
+  width: 64px; height: 64px; border-radius: 50%; overflow: hidden; flex: none; display: block;
+}
+
+.detail {
+  display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start;
+}
+
+.detail-cote {
+  position: sticky; top: 76px;
+}
+
+.horaires {
+  width: 100%; border-collapse: collapse;
+}
+
+.horaires td {
+  padding: .35rem 0; border-bottom: 1px solid var(--bord);
+}
+
+.profil-tete {
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
+}
+
+.grand {
+  width: 96px; height: 96px;
+}
+
+@media (max-width: 960px) {
+  .detail {
+    grid-template-columns: 1fr;
+  }
+  .detail-cote {
+    position: static;
+  }
+}

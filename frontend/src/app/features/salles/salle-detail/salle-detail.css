@@ -1,0 +1,36 @@
+.detail {
+  display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start;
+}
+
+.detail-cote {
+  position: sticky; top: 76px;
+}
+
+.galerie-grande {
+  position: relative; aspect-ratio: 16 / 9; border-radius: var(--rayon); overflow: hidden; background: #e9e9ef;
+}
+
+.galerie-mini {
+  display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;
+}
+
+.galerie-mini img {
+  width: 84px; height: 64px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent;
+}
+
+.horaires {
+  width: 100%; border-collapse: collapse;
+}
+
+.horaires td {
+  padding: .35rem 0; border-bottom: 1px solid var(--bord);
+}
+
+@media (max-width: 960px) {
+  .detail {
+    grid-template-columns: 1fr;
+  }
+  .detail-cote {
+    position: static;
+  }
+}

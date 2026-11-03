@@ -1,0 +1,32 @@
+<div class="container">
+  <section class="hero">
+    <h1>Trouvez votre salle ou votre coach</h1>
+    <form class="recherche" (ngSubmit)="rechercher()" role="search">
+      <input class="input" name="q" [(ngModel)]="q" placeholder="Salle, coach, activité, ville" aria-label="Rechercher" />
+      <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+  </section>
+
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Impossible de charger les données pour le moment.</p>
+  } @else if (!vue()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <section class="bloc">
+      <div class="entete-bloc"><h2>Salles</h2><a routerLink="/salles">Voir tout</a></div>
+      @if (salles().length) {
+        <div class="grille grille-4">
+          @for (s of salles(); track s.id) { <app-carte-salle [salle]="s" [vue]="vue()!" /> }
+        </div>
+      } @else { <p class="muted">Aucune salle pour le moment.</p> }
+    </section>
+    <section class="bloc">
+      <div class="entete-bloc"><h2>Coachs</h2><a routerLink="/coachs">Voir tout</a></div>
+      @if (coachs().length) {
+        <div class="grille grille-3">
+          @for (c of coachs(); track c.id) { <app-carte-coach [coach]="c" [vue]="vue()!" /> }
+        </div>
+      } @else { <p class="muted">Aucun coach pour le moment.</p> }
+    </section>
+  }
+</div>

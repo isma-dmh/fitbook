@@ -1,0 +1,70 @@
+<div class="container">
+  <h1>{{ titre() }}</h1>
+
+  <div class="recherche">
+    <input class="input" [(ngModel)]="q" placeholder="Salle, coach, activité, ville" aria-label="Rechercher" />
+  </div>
+
+  <div class="filtres">
+    <div class="champ">
+      <label for="f-ville">Ville</label>
+      <input id="f-ville" class="input" [(ngModel)]="ville" placeholder="Toutes" />
+    </div>
+    <div class="champ">
+      <label for="f-act">Activité</label>
+      <select id="f-act" class="input" [(ngModel)]="activite">
+        <option value="">Toutes</option>
+        @for (a of vue() ? vue()!.d.activites : []; track a.id) { <option [value]="a['@id']">{{ a.nom }}</option> }
+      </select>
+    </div>
+    <div class="champ">
+      <label for="f-note">Note minimale</label>
+      <select id="f-note" class="input" [(ngModel)]="noteMin">
+        <option [ngValue]="0">Toutes</option>
+        @for (n of [1, 2, 3, 4, 5]; track n) { <option [ngValue]="n">{{ n }} ★ et plus</option> }
+      </select>
+    </div>
+    @if (type() !== 'salles') {
+      <div class="champ">
+        <label for="f-prix">Prix maximum (€)</label>
+        <input id="f-prix" type="number" min="0" class="input" [(ngModel)]="prixMax" placeholder="Sans limite" />
+      </div>
+    }
+    @if (type() === 'seances') {
+      <div class="champ">
+        <label for="f-date">Date</label>
+        <input id="f-date" type="date" class="input" [(ngModel)]="date" />
+      </div>
+      <label class="case"><input type="checkbox" [(ngModel)]="placesSeules" /> Places disponibles uniquement</label>
+    }
+    <button type="button" class="btn btn-sm btn-ghost" (click)="reinitialiser()">Réinitialiser</button>
+  </div>
+
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Impossible de charger les données.</p>
+  } @else if (!vue()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <p class="muted" aria-live="polite">{{ nombre() }} résultat(s)</p>
+    @switch (type()) {
+      @case ('salles') {
+        <div class="grille grille-4">
+          @for (s of salles(); track s.id) { <app-carte-salle [salle]="s" [vue]="vue()!" /> }
+        </div>
+      }
+      @case ('coachs') {
+        <div class="grille grille-3">
+          @for (c of coachs(); track c.id) { <app-carte-coach [coach]="c" [vue]="vue()!" /> }
+        </div>
+      }
+      @case ('seances') {
+        <div class="liste">
+          @for (s of seances(); track s.id) { <app-ligne-seance [seance]="s" [vue]="vue()!" /> }
+        </div>
+      }
+    }
+    @if (nombre() === 0) {
+      <div class="vide"><p>Aucun résultat pour ces critères.</p></div>
+    }
+  }
+</div>

@@ -1,0 +1,70 @@
+<div class="container">
+  <p><a routerLink="/salles">← Toutes les salles</a></p>
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Cette salle est introuvable.</p>
+  } @else if (vue() && salle(); as s) {
+    <div class="detail">
+      <div class="detail-principal">
+        <div class="galerie">
+          <div class="galerie-grande">
+            <app-visuel [src]="photoActive()" [texte]="s.nom" />
+            <app-favori class="coin" type="salles" [cible]="s['@id']" />
+          </div>
+          @if (photos().length > 1) {
+            <div class="galerie-mini">
+              @for (p of photos(); track p.id) {
+                <button type="button" (click)="photo.set(p.url)" [attr.aria-label]="'Voir la photo ' + $index"><img [src]="p.url" alt="" loading="lazy" /></button>
+              }
+            </div>
+          }
+        </div>
+        <h1>{{ s.nom }}</h1>
+        <p class="muted">{{ s.adresse }}, {{ s.ville }}</p>
+        <p><app-etoiles [note]="note()" [nombre]="avis().length" /> · capacité {{ s.capaciteMax }} personnes</p>
+        <div class="pastilles">
+          @for (a of activites(); track a) { <span class="pastille">{{ a }}</span> }
+        </div>
+
+        <h2>Description</h2>
+        <p>{{ s.description }}</p>
+
+        <h2>Horaires</h2>
+        @if (horaires().length) {
+          <ul class="horaires">
+            @for (h of horaires(); track h.id) {
+              <li><span>{{ jour(h.jourSemaine) }}</span><span>{{ heure(h.heureOuverture) }} – {{ heure(h.heureFermeture) }}</span></li>
+            }
+          </ul>
+        } @else { <p class="muted">Horaires non renseignés.</p> }
+
+        <h2>Équipements</h2>
+        @if (equipements().length) {
+          <div class="pastilles">
+            @for (e of equipements(); track e) { <span class="pastille">{{ e }}</span> }
+          </div>
+        } @else { <p class="muted">Aucun équipement renseigné.</p> }
+
+        <div class="entete-bloc">
+          <h2>Avis</h2>
+          @if (auth.role() === 'sportif') {
+            <a class="btn btn-sm" routerLink="/avis/nouveau" [queryParams]="{ salle: s.id }">Laisser un avis</a>
+          }
+        </div>
+        <app-avis-liste [avis]="avis()" />
+      </div>
+
+      <aside class="detail-cote">
+        <div class="carte">
+          <h2>Prochaines séances</h2>
+          @if (seances().length) {
+            <div class="liste">
+              @for (se of seances(); track se.id) { <app-ligne-seance [seance]="se" [vue]="vue()!" /> }
+            </div>
+          } @else { <p class="muted">Aucune séance programmée.</p> }
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <p class="muted">Chargement…</p>
+  }
+</div>

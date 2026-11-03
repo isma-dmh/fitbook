@@ -1,0 +1,60 @@
+<div class="container">
+  <p><a routerLink="/coachs">← Tous les coachs</a></p>
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Ce coach est introuvable.</p>
+  } @else if (vue() && coach(); as c) {
+    <div class="detail">
+      <div class="detail-principal">
+        <div class="profil-tete">
+          <app-visuel class="rond grand" [src]="vue()!.imageCoach(c)" [texte]="nom()" />
+          <div>
+            <h1>{{ nom() }}</h1>
+            <p class="muted">{{ c.specialites }} · {{ c.ville }}</p>
+            <p><app-etoiles [note]="note()" [nombre]="avis().length" /> · {{ tarif() }}/h</p>
+          </div>
+          <app-favori class="coin" type="coachs" [cible]="c['@id']" />
+        </div>
+
+        <h2>Présentation</h2>
+        <p>{{ c.presentation }}</p>
+
+        @if (salles().length) {
+          <h2>Salles</h2>
+          <div class="pastilles">
+            @for (s of salles(); track s.id) { <a class="pastille" [routerLink]="['/salles', s.id]">{{ s.nom }}</a> }
+          </div>
+        }
+
+        <h2>Horaires de travail</h2>
+        @if (horaires().length) {
+          <ul class="horaires">
+            @for (h of horaires(); track h.id) {
+              <li><span>{{ jour(h.jourSemaine) }}</span><span>{{ heure(h.heureDebut) }} – {{ heure(h.heureFin) }}</span></li>
+            }
+          </ul>
+        } @else { <p class="muted">Horaires non renseignés.</p> }
+
+        <div class="entete-bloc">
+          <h2>Avis</h2>
+          @if (auth.role() === 'sportif') {
+            <a class="btn btn-sm" routerLink="/avis/nouveau" [queryParams]="{ coach: c.id }">Laisser un avis</a>
+          }
+        </div>
+        <app-avis-liste [avis]="avis()" />
+      </div>
+
+      <aside class="detail-cote">
+        <div class="carte">
+          <h2>Prochaines séances</h2>
+          @if (seances().length) {
+            <div class="liste">
+              @for (se of seances(); track se.id) { <app-ligne-seance [seance]="se" [vue]="vue()!" /> }
+            </div>
+          } @else { <p class="muted">Aucune séance programmée.</p> }
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <p class="muted">Chargement…</p>
+  }
+</div>
