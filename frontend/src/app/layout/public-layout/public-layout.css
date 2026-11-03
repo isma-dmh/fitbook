@@ -1,0 +1,66 @@
+.entete {
+  position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--bord);
+}
+
+.entete-in {
+  display: flex; align-items: center; gap: 16px; min-height: 60px;
+}
+
+.logo {
+  font-weight: 800; font-size: 1.25rem; color: var(--accent);
+}
+
+.logo:hover {
+  text-decoration: none;
+}
+
+.nav {
+  display: flex; align-items: center; gap: 14px; flex: 1;
+}
+
+.nav a:not(.btn) {
+  color: var(--texte); padding: .35rem .15rem; border-bottom: 2px solid transparent;
+}
+
+.nav a.actif:not(.btn) {
+  border-color: var(--accent);
+}
+
+.nav-sep {
+  flex: 1;
+}
+
+.utilisateur {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--texte);
+}
+
+.avatar {
+  display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-clair); color: var(--accent); font-weight: 700; font-size: .8rem;
+}
+
+.burger {
+  display: none; margin-left: auto; background: none; border: 0; font-size: 1.5rem; cursor: pointer;
+}
+
+.principal {
+  padding: 24px 0 48px; min-height: 70vh;
+}
+
+.pied {
+  border-top: 1px solid var(--bord); padding: 20px 0; color: var(--muted); font-size: .88rem; text-align: center;
+}
+
+@media (max-width: 760px) {
+  .burger {
+    display: block;
+  }
+  .nav {
+    display: none; position: absolute; top: 60px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 4px; padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--bord);
+  }
+  .nav.ouvert {
+    display: flex;
+  }
+  .nav-sep {
+    display: none;
+  }
+}

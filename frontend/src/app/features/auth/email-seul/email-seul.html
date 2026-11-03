@@ -1,0 +1,20 @@
+<div class="carte-auth">
+  <h1>{{ titre }}</h1>
+  <p class="muted">{{ intro }}</p>
+  @if (envoye()) {
+    <p class="alerte ok" role="status">{{ confirmation }}</p>
+    <p><a routerLink="/connexion" class="btn">Retour à la connexion</a></p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="envoyer()" novalidate>
+      <div class="champ">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" class="input" autocomplete="email" />
+        @if (form.controls.email.invalid && (form.controls.email.touched || form.controls.email.dirty)) {
+          <p class="erreur">Saisissez une adresse email valide.</p>
+        }
+      </div>
+      @if (erreur()) { <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p> }
+      <button type="submit" class="btn btn-primary btn-bloc" [disabled]="envoi()">{{ envoi() ? 'Envoi…' : 'Envoyer' }}</button>
+    </form>
+  }
+</div>
