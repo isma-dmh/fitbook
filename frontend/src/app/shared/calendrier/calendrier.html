@@ -1,0 +1,28 @@
+<div class="cal-entete">
+  <button type="button" class="btn btn-sm" (click)="changer(-1)" aria-label="Mois précédent">‹</button>
+  <h2 class="cal-titre">{{ titre() }}</h2>
+  <button type="button" class="btn btn-sm" (click)="changer(1)" aria-label="Mois suivant">›</button>
+  <button type="button" class="btn btn-sm btn-ghost" (click)="aujourdhui()">Aujourd'hui</button>
+</div>
+<div class="cal-grille cal-jours">
+  @for (j of ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']; track j) {
+    <div class="cal-nom">{{ j }}</div>
+  }
+</div>
+<div class="cal-grille">
+  @for (c of cellules(); track c.date) {
+    <div class="cal-case" [class.hors]="!c.dansMois" [class.auj]="c.aujourdhui">
+      <span class="cal-num">{{ c.jour }}</span>
+      @for (e of c.evenements.slice(0, 3); track $index) {
+        @if (e.lien) {
+          <a class="cal-evt" [class]="'cal-evt ' + (e.type ?? 'seance')" [routerLink]="e.lien" [title]="e.titre + (e.sous ? ' · ' + e.sous : '')">{{ e.titre }}</a>
+        } @else {
+          <span class="cal-evt" [class]="'cal-evt ' + (e.type ?? 'seance')" [title]="e.titre + (e.sous ? ' · ' + e.sous : '')">{{ e.titre }}</span>
+        }
+      }
+      @if (c.evenements.length > 3) {
+        <span class="cal-plus">+{{ c.evenements.length - 3 }}</span>
+      }
+    </div>
+  }
+</div>

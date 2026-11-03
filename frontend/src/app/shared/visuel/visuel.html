@@ -1,0 +1,5 @@
+@if (src()) {
+  <img [src]="src()" [alt]="texte()" loading="lazy" />
+} @else {
+  <span class="initiales">{{ lettres() }}</span>
+}

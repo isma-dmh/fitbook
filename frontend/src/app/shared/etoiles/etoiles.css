@@ -1,0 +1,11 @@
+.etoile {
+  color: #f5a623;
+}
+
+.etoile.off {
+  color: #c9c9c9;
+}
+
+.note {
+  font-size: .9rem;
+}

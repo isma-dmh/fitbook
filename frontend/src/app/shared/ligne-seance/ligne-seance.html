@@ -1,0 +1,11 @@
+<div class="ligne-seance">
+  <div class="ligne-seance-infos">
+    <strong>{{ jour() }} · {{ heureTxt() }} · {{ seance().dureeMinutes }} min</strong>
+    <span class="muted">{{ vue().nomActivite(seance().activite) }}@if (lieu()) { · {{ lieu() }} }</span>
+    <span [class]="complet() ? 'etat complet' : 'etat'">{{ complet() ? 'Complet' : places() + ' place(s) disponible(s)' }} · {{ tarif() }}</span>
+  </div>
+  <div class="ligne-seance-actions">
+    <app-favori type="seances" [cible]="seance()['@id']" />
+    <a class="btn btn-sm" [class.btn-primary]="!complet()" [routerLink]="['/seances', seance().id]">{{ complet() ? 'Voir' : 'Choisir' }}</a>
+  </div>
+</div>

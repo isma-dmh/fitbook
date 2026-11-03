@@ -1,0 +1,5 @@
+@if (visible()) {
+  <button type="button" class="coeur" [class.actif]="actif()" (click)="cliquer($event)" [attr.aria-pressed]="actif()" [attr.aria-label]="actif() ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+    {{ actif() ? '♥' : '♡' }}
+  </button>
+}

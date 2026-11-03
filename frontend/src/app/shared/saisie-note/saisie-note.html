@@ -1,0 +1,5 @@
+<div class="saisie-note" role="radiogroup" aria-label="Note">
+  @for (n of [1, 2, 3, 4, 5]; track n) {
+    <button type="button" class="etoile-btn" [class.on]="n <= valeur()" (click)="choisie.emit(n)" [attr.aria-label]="n + ' sur 5'">★</button>
+  }
+</div>

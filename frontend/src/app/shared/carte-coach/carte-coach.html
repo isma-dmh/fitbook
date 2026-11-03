@@ -1,0 +1,9 @@
+<a class="carte carte-coach" [routerLink]="['/coachs', coach().id]">
+  <app-visuel class="rond" [src]="vue().imageCoach(coach())" [texte]="vue().nomCoach(coach())" />
+  <div class="carte-corps">
+    <h3>{{ vue().nomCoach(coach()) }}</h3>
+    <p class="muted">{{ coach().specialites }} · {{ coach().ville }}</p>
+    <p><app-etoiles [note]="vue().noteCoach(coach())" [nombre]="vue().avisCoach(coach()['@id']).length" /> · {{ tarif() }}/h</p>
+  </div>
+  <app-favori class="coin" type="coachs" [cible]="coach()['@id']" />
+</a>

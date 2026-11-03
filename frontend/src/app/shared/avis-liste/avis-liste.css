@@ -1,0 +1,21 @@
+.carte-avis p {
+  margin: .25rem 0 0;
+}
+
+.avis-tete {
+  display: flex; justify-content: space-between; gap: 8px;
+}
+
+.grille-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.etoiles {
+  color: #f5a623;
+}
+
+@media (max-width: 760px) {
+  .grille-2 {
+    grid-template-columns: 1fr;
+  }
+}

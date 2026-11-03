@@ -1,0 +1,5 @@
+@if (note() !== null) {
+  <span class="note"><span class="etoile">★</span> {{ texteNote() }}@if (nombre() !== null) { · {{ nombre() }} avis }</span>
+} @else {
+  <span class="note muted"><span class="etoile off">★</span> Pas encore d'avis</span>
+}
