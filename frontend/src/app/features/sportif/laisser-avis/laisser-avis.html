@@ -1,0 +1,26 @@
+<div class="container etroit">
+  <h1>Laisser un avis</h1>
+  @if (!cible()) {
+    <p class="alerte erreur-bloc" role="alert">Aucune salle ni aucun coach à noter.</p>
+    <p><a routerLink="/mes-reservations">Retour à mes réservations</a></p>
+  } @else if (envoye()) {
+    <p class="alerte ok" role="status">Merci, votre avis est publié.</p>
+    <p><a class="btn btn-primary" [routerLink]="cible()!.lien">Retour à la fiche</a></p>
+  } @else {
+    <p class="muted">Vous notez : <strong>{{ cible()!.nom }}</strong></p>
+    <p class="alerte info">Vous pouvez noter après avoir suivi une séance passée et confirmée.</p>
+    <form [formGroup]="form" (ngSubmit)="envoyer()" novalidate>
+      <div class="champ">
+        <span class="label" id="lbl-note">Note</span>
+        <app-saisie-note [valeur]="form.controls.note.value" (choisie)="form.controls.note.setValue($event)" />
+        @if (form.controls.note.value < 1 && form.controls.note.touched) { <p class="erreur">Choisissez une note.</p> }
+      </div>
+      <div class="champ">
+        <label for="commentaire">Commentaire</label>
+        <textarea id="commentaire" class="input" rows="5" formControlName="commentaire" maxlength="2000"></textarea>
+      </div>
+      @if (erreur()) { <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p> }
+      <button type="submit" class="btn btn-primary" [disabled]="envoi()">Publier</button>
+    </form>
+  }
+</div>

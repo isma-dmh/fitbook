@@ -1,0 +1,52 @@
+<div class="container etroit">
+  <h1>Mon compte</h1>
+  <p class="muted">{{ auth.email() }} · {{ libelleRole() }}</p>
+  @if (auth.profilEtat() === 'attente') {
+    <p class="muted">Chargement…</p>
+  } @else if (!auth.profil()) {
+    <p class="alerte erreur-bloc" role="alert">Votre profil n'a pas pu être chargé.</p>
+    <button type="button" class="btn" (click)="auth.chargerProfil().subscribe()">Réessayer</button>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="enregistrer()" novalidate>
+      <div class="deux-col">
+        <div class="champ">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" class="input" formControlName="prenom" />
+          @if (form.controls.prenom.invalid && form.controls.prenom.touched) { <p class="erreur">Obligatoire.</p> }
+        </div>
+        <div class="champ">
+          <label for="nom">Nom</label>
+          <input id="nom" class="input" formControlName="nom" />
+          @if (form.controls.nom.invalid && form.controls.nom.touched) { <p class="erreur">Obligatoire.</p> }
+        </div>
+      </div>
+      <div class="champ">
+        <label for="image">Photo de profil</label>
+        @if (auth.profil()?.image; as image) {
+          <span class="rond grand"><img [src]="image" alt="Photo de profil actuelle" /></span>
+        }
+        <input id="image" class="input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="choisirImage($event)" />
+        <p class="aide-champ">JPEG, PNG, WebP ou GIF, 2 Mo maximum.</p>
+      </div>
+      @if (auth.role() === 'sportif') {
+        <div class="champ">
+          <label for="objectifs">Objectifs</label>
+          <textarea id="objectifs" class="input" rows="3" formControlName="objectifs"></textarea>
+        </div>
+        <div class="champ">
+          <label for="niveau">Niveau</label>
+          <select id="niveau" class="input" formControlName="niveau">
+            <option value="">Non précisé</option>
+            <option value="debutant">Débutant</option>
+            <option value="intermediaire">Intermédiaire</option>
+            <option value="avance">Avancé</option>
+          </select>
+        </div>
+      }
+      @if (message()) { <p class="alerte ok" role="status">{{ message() }}</p> }
+      @if (erreur()) { <p class="alerte erreur-bloc" role="alert">{{ erreur() }}</p> }
+      <button type="submit" class="btn btn-primary" [disabled]="envoi()">Enregistrer</button>
+    </form>
+  }
+  <p class="aide"><a routerLink="/mot-de-passe-oublie">Changer mon mot de passe</a></p>
+</div>

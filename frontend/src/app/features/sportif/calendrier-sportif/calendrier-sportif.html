@@ -1,0 +1,10 @@
+<div class="container">
+  <h1>Mon calendrier</h1>
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Impossible de charger votre calendrier.</p>
+  } @else if (!pret()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <app-calendrier [evenements]="evenements()" />
+  }
+</div>

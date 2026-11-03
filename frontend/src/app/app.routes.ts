@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards';
 
 const lazy = (fn: () => Promise<any>) => ({ loadComponent: fn });
 
@@ -22,6 +23,13 @@ export const routes: Routes = [
       { path: 'renvoyer-confirmation', data: { mode: 'confirmation' }, ...lazy(() => import('./features/auth/email-seul/email-seul').then((m) => m.EmailSeul)) },
       { path: 'mot-de-passe-oublie', data: { mode: 'motdepasse' }, ...lazy(() => import('./features/auth/email-seul/email-seul').then((m) => m.EmailSeul)) },
       { path: 'reinitialiser-mot-de-passe', ...lazy(() => import('./features/auth/mdp-reset/mdp-reset').then((m) => m.MdpReset)) },
+
+      { path: 'favoris', canActivate: [authGuard], ...lazy(() => import('./features/sportif/favoris/favoris').then((m) => m.FavorisPage)) },
+      { path: 'calendrier', canActivate: [authGuard], ...lazy(() => import('./features/sportif/calendrier-sportif/calendrier-sportif').then((m) => m.CalendrierSportif)) },
+      { path: 'mes-reservations', canActivate: [authGuard], ...lazy(() => import('./features/sportif/mes-reservations/mes-reservations').then((m) => m.MesReservations)) },
+      { path: 'mes-avis', canActivate: [authGuard], ...lazy(() => import('./features/sportif/mes-avis/mes-avis').then((m) => m.MesAvis)) },
+      { path: 'avis/nouveau', canActivate: [authGuard], ...lazy(() => import('./features/sportif/laisser-avis/laisser-avis').then((m) => m.LaisserAvis)) },
+      { path: 'compte', canActivate: [authGuard], ...lazy(() => import('./features/sportif/compte/compte').then((m) => m.Compte)) },
     ],
   },
   { path: '**', redirectTo: '' },

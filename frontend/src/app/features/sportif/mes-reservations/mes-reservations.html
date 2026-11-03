@@ -1,0 +1,37 @@
+<div class="container etroit">
+  <h1>Mes réservations</h1>
+  <div class="pastilles">
+    <button type="button" class="pastille" [class.actif]="onglet() === 'avenir'" (click)="onglet.set('avenir')">À venir ({{ avenir().length }})</button>
+    <button type="button" class="pastille" [class.actif]="onglet() === 'historique'" (click)="onglet.set('historique')">Historique ({{ historique().length }})</button>
+  </div>
+  @if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Impossible de charger vos réservations.</p>
+  } @else if (!pret()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <div class="liste">
+      @for (r of affichees(); track r.id) {
+        <div class="ligne-seance">
+          <div class="ligne-seance-infos">
+            <strong>{{ titre(r) }}</strong>
+            <span class="muted">{{ jourFr(seance(r)?.dateSeance) }} · {{ heure(seance(r)?.heureDebut) }} · {{ lieu(r) }}</span>
+            <span [class]="'etat ' + (r.statut === 'annulee' ? 'complet' : '')">{{ r.statut === 'annulee' ? 'Annulée' : 'Confirmée' }}</span>
+          </div>
+          <div class="ligne-seance-actions">
+            @if (seance(r); as s) { <a class="btn btn-sm" [routerLink]="['/seances', s.id]">Voir</a> }
+            @if (peutAnnuler(r)) { <button type="button" class="btn btn-sm btn-danger" (click)="annuler(r)">Annuler</button> }
+            @if (r.statut !== 'annulee' && passee(r) && salleId(r); as sid) {
+              <a class="btn btn-sm" routerLink="/avis/nouveau" [queryParams]="{ salle: sid }">Laisser un avis</a>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="vide"><p>{{ onglet() === 'avenir' ? 'Aucune réservation à venir.' : 'Aucune réservation passée.' }}</p>
+          @if (onglet() === 'avenir') { <a class="btn btn-primary" routerLink="/seances">Trouver une séance</a> }
+        </div>
+      }
+    </div>
+  }
+  <p class="aide"><a routerLink="/mes-avis">Mes avis</a></p>
+</div>

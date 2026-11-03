@@ -1,0 +1,36 @@
+<div class="container etroit">
+  <h1>Mes avis</h1>
+  @if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
+  @if (!vue()) {
+    <p class="muted">Chargement…</p>
+  } @else {
+    <div class="liste">
+      @for (a of mesAvis(); track a.id) {
+        <article class="carte carte-avis">
+          <div class="avis-tete">
+            <strong>{{ cible(a) }}</strong>
+            <span class="muted petit">{{ date(a) }}</span>
+          </div>
+          @if (edition()?.id === a.id) {
+            <app-saisie-note [valeur]="note()" (choisie)="note.set($event)" />
+            <textarea class="input" rows="3" [(ngModel)]="commentaire" aria-label="Commentaire"></textarea>
+            <div class="actions">
+              <button type="button" class="btn btn-sm btn-primary" (click)="enregistrer(a)">Enregistrer</button>
+              <button type="button" class="btn btn-sm" (click)="edition.set(null)">Annuler</button>
+            </div>
+          } @else {
+            <p class="etoiles">{{ '★'.repeat(a.note) }}{{ '☆'.repeat(5 - a.note) }}</p>
+            @if (a.commentaire) { <p>{{ a.commentaire }}</p> }
+            <div class="actions">
+              <button type="button" class="btn btn-sm" (click)="modifier(a)">Modifier</button>
+              <button type="button" class="btn btn-sm btn-danger" (click)="supprimer(a)">Supprimer</button>
+            </div>
+          }
+        </article>
+      } @empty {
+        <div class="vide"><p>Vous n'avez pas encore publié d'avis.</p></div>
+      }
+    </div>
+  }
+  <p class="aide"><a routerLink="/mes-reservations">← Mes réservations</a></p>
+</div>
