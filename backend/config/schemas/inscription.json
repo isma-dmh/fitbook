@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fitbook.local/schemas/inscription.json",
+  "title": "Inscription FitBook",
+  "type": "object",
+  "required": ["email", "password", "nom", "prenom", "role"],
+  "additionalProperties": false,
+  "properties": {
+    "email": { "type": "string", "format": "email", "maxLength": 180 },
+    "password": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "nom": { "type": "string", "minLength": 1, "maxLength": 255, "pattern": "\\S" },
+    "prenom": { "type": "string", "minLength": 1, "maxLength": 255, "pattern": "\\S" },
+    "role": { "type": "string", "enum": ["sportif", "coach", "salle"] }
+  }
+}
