@@ -9,6 +9,13 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    /** Fuseau horaire de l'application : celui des séances saisies par les utilisateurs. */
+    public function boot(): void
+    {
+        date_default_timezone_set('Europe/Brussels');
+        parent::boot();
+    }
+
     /**
      * @return list<string> An array of allowed values for APP_ENV
      */
