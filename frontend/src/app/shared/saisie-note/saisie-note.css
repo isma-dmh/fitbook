@@ -1,0 +1,11 @@
+.saisie-note {
+  display: inline-flex; gap: 2px;
+}
+
+.etoile-btn {
+  background: none; border: 0; font-size: 1.9rem; color: #cfcfcf; cursor: pointer; padding: 0 2px;
+}
+
+.etoile-btn.on {
+  color: #f5a623;
+}

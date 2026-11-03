@@ -1,0 +1,15 @@
+.carte-corps {
+  padding: .75rem .25rem .25rem;
+}
+
+.carte-coach {
+  display: flex; align-items: center; gap: 1rem; position: relative;
+}
+
+.carte-coach .carte-corps {
+  padding: 0; flex: 1;
+}
+
+.rond {
+  width: 64px; height: 64px; border-radius: 50%; overflow: hidden; flex: none; display: block;
+}

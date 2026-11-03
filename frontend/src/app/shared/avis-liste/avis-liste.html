@@ -1,0 +1,16 @@
+@if (avis().length) {
+  <div class="grille grille-2">
+    @for (a of avis(); track a.id) {
+      <article class="carte carte-avis">
+        <div class="avis-tete">
+          <strong>{{ auteur(a) }}</strong>
+          <span class="etoiles" [attr.aria-label]="a.note + ' sur 5'">{{ etoiles(a.note) }}</span>
+        </div>
+        @if (a.commentaire) { <p>{{ a.commentaire }}</p> }
+        @if (a.dateCreation) { <p class="muted petit">{{ date(a) }}</p> }
+      </article>
+    }
+  </div>
+} @else {
+  <p class="muted">{{ vide() }}</p>
+}

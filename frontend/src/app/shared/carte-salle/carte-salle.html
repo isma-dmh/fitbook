@@ -1,0 +1,11 @@
+<a class="carte carte-salle" [routerLink]="['/salles', salle().id]">
+  <div class="carte-image">
+    <app-visuel [src]="vue().imageSalle(salle())" [texte]="salle().nom" />
+    <app-favori class="coin" type="salles" [cible]="salle()['@id']" />
+  </div>
+  <div class="carte-corps">
+    <h3>{{ salle().nom }}</h3>
+    <p class="muted">{{ salle().ville }}@if (activites()) { · {{ activites() }} }</p>
+    <app-etoiles [note]="vue().noteSalle(salle())" [nombre]="vue().avisSalle(salle()['@id']).length" />
+  </div>
+</a>
