@@ -1,0 +1,28 @@
+.bloc {
+  margin: 2rem 0;
+}
+
+.hero {
+  padding: 2.5rem 0 1rem; text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.2rem;
+}
+
+.recherche {
+  display: flex; gap: 8px; max-width: 560px; margin: 0 auto 1rem;
+}
+
+.hero .pastilles {
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    font-size: 1.7rem;
+  }
+  .recherche {
+    flex-direction: column;
+  }
+}

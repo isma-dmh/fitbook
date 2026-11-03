@@ -1,0 +1,43 @@
+<div class="container etroit">
+  <p><a routerLink="/seances">← Toutes les séances</a></p>
+  @if (erreur()) {
+    <p class="alerte erreur-bloc" role="alert">Cette séance est introuvable.</p>
+  } @else if (vue() && seance(); as s) {
+    <div class="carte carte-large">
+      <div class="entete-bloc">
+        <h1>{{ vue()!.nomActivite(s.activite) }}</h1>
+        <app-favori type="seances" [cible]="s['@id']" />
+      </div>
+      <dl class="infos">
+        <div><dt>Date</dt><dd>{{ jour() }}</dd></div>
+        <div><dt>Heure</dt><dd>{{ heureDebut() }} · {{ s.dureeMinutes }} min</dd></div>
+        @if (salle(); as sa) { <div><dt>Salle</dt><dd><a [routerLink]="['/salles', sa.id]">{{ sa.nom }}</a>, {{ sa.ville }}</dd></div> }
+        @if (coach(); as c) { <div><dt>Coach</dt><dd><a [routerLink]="['/coachs', c.id]">{{ vue()!.nomCoach(c) }}</a></dd></div> }
+        <div><dt>Prix</dt><dd>{{ tarif() }}</dd></div>
+        <div><dt>Places</dt><dd>{{ places() }} / {{ s.capacite }} disponibles</dd></div>
+      </dl>
+
+      @if (reservee()) {
+        <p class="alerte ok" role="status">Votre place est réservée. Un email de confirmation vous a été envoyé.</p>
+        <p><a routerLink="/mes-reservations" class="btn btn-primary">Voir mes réservations</a></p>
+      } @else if (s.statut === 'annulee') {
+        <p class="alerte erreur-bloc">Cette séance a été annulée.</p>
+      } @else if (passee()) {
+        <p class="alerte info">Cette séance est déjà passée.</p>
+      } @else if (!auth.estConnecte()) {
+        <p class="alerte info">Connectez-vous pour réserver.</p>
+        <a class="btn btn-primary" routerLink="/connexion" [queryParams]="{ retour: '/seances/' + s.id }">Se connecter</a>
+      } @else if (auth.role() !== 'sportif') {
+        <p class="alerte info">Seuls les sportifs peuvent réserver une séance.</p>
+      } @else if (places() <= 0) {
+        <p class="alerte erreur-bloc" role="status">Cette séance est complète. Choisissez un autre créneau.</p>
+        <a class="btn" routerLink="/seances">Voir d'autres séances</a>
+      } @else {
+        @if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
+        <button type="button" class="btn btn-primary btn-bloc" (click)="reserver()" [disabled]="envoi()">{{ envoi() ? 'Réservation…' : 'Réserver' }}</button>
+      }
+    </div>
+  } @else {
+    <p class="muted">Chargement…</p>
+  }
+</div>

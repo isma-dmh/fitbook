@@ -1,0 +1,17 @@
+.btn-ghost {
+  border-color: transparent; background: transparent;
+}
+
+.recherche {
+  display: flex; gap: 8px; max-width: 560px; margin: 0 auto 1rem;
+}
+
+.filtres {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.25rem; align-items: end;
+}
+
+@media (max-width: 760px) {
+  .recherche {
+    flex-direction: column;
+  }
+}
