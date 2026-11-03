@@ -38,6 +38,7 @@ Toute la conception se trouve dans le dossier [`docs/`](docs/) :
 - [User stories](docs/user-stories.md)
 - [Diagrammes de cas d'utilisation](docs/use-cases/)
 - [MCD](docs/mcd/fitbook-mcd.png) (fichier source : `docs/mcd/fitbook.mcd`, Looping)
+- [MLD](docs/mld/fitbook-mld.md) (modèle relationnel déduit de la base)
 - [Diagramme de classes](docs/diagramme-classes/fitbook-diagramme.png) (fichier source : `.mdj`, StarUML)
 - Maquettes Figma : wireframes et maquettes couleur pour mobile, tablette et desktop
 
