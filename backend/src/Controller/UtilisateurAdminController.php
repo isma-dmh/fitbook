@@ -44,6 +44,12 @@ final class UtilisateurAdminController extends AbstractController
             }
             $utilisateur->setActif($donnees['actif']);
         }
+        if (array_key_exists('emailVerifie', $donnees)) {
+            if (!is_bool($donnees['emailVerifie'])) {
+                return new JsonResponse(['message' => 'Le champ emailVerifie doit être un booléen.'], 422);
+            }
+            $utilisateur->setEmailVerifie($donnees['emailVerifie']);
+        }
         foreach (['nom' => 'setNom', 'prenom' => 'setPrenom'] as $champ => $setter) {
             if (!array_key_exists($champ, $donnees)) {
                 continue;
