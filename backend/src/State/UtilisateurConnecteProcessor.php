@@ -10,6 +10,7 @@ use App\Entity\Reservation;
 use App\Entity\Salle;
 use App\Entity\Seance;
 use App\Entity\Utilisateur;
+use App\Service\NotificationReservation;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -27,6 +28,7 @@ final class UtilisateurConnecteProcessor implements ProcessorInterface
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private readonly ProcessorInterface $persistProcessor,
         private readonly TokenStorageInterface $tokenStorage,
+        private readonly NotificationReservation $notifications,
     ) {
     }
 
@@ -52,7 +54,13 @@ final class UtilisateurConnecteProcessor implements ProcessorInterface
             $this->verifierSeance($data);
         }
 
-        return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+        $resultat = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
+
+        if ($data instanceof Reservation) {
+            $this->notifications->reservationCreee($data);
+        }
+
+        return $resultat;
     }
 
     private function verifierReservation(Reservation $reservation, Utilisateur $user): void
