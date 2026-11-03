@@ -1,13 +1,28 @@
 <h1>{{ config.titre }}</h1>
 @if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
 
-@if (config.formulaire) {
+@if (config.formulaire && (!config.modificationSeule || edition())) {
   <form class="formulaire carte" (ngSubmit)="ajouter()">
     <h2>{{ edition() ? 'Modifier' : 'Ajouter' }}</h2>
     @for (c of config.formulaire; track c.cle) {
       <div class="champ">
         <label [for]="'f-' + c.cle">{{ c.libelle }}</label>
-        <input [id]="'f-' + c.cle" class="input" [name]="c.cle" [ngModel]="saisie()[c.cle]" (ngModelChange)="maj(c.cle, $event)" />
+        @switch (c.type) {
+          @case ('choix') {
+            <select [id]="'f-' + c.cle" class="input" [name]="c.cle" [ngModel]="saisie()[c.cle]" (ngModelChange)="maj(c.cle, $event)">
+              @for (o of c.options; track o) { <option [value]="o">{{ o }}</option> }
+            </select>
+          }
+          @case ('multiligne') {
+            <textarea [id]="'f-' + c.cle" class="input" rows="3" [name]="c.cle" [ngModel]="saisie()[c.cle]" (ngModelChange)="maj(c.cle, $event)"></textarea>
+          }
+          @case ('nombre') {
+            <input [id]="'f-' + c.cle" class="input" type="number" step="any" [name]="c.cle" [ngModel]="saisie()[c.cle]" (ngModelChange)="maj(c.cle, $event)" />
+          }
+          @default {
+            <input [id]="'f-' + c.cle" class="input" [name]="c.cle" [ngModel]="saisie()[c.cle]" (ngModelChange)="maj(c.cle, $event)" />
+          }
+        }
       </div>
     }
     <div class="actions">

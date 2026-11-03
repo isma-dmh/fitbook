@@ -9,12 +9,23 @@ interface Colonne {
   titre: string;
   valeur: (e: any) => string;
 }
+interface Champ {
+  cle: string;
+  libelle: string;
+  /** Clé lue dans la ligne affichée, si elle diffère de celle envoyée à l'API (ex. roleLibelle pour role). */
+  source?: string;
+  type?: 'texte' | 'nombre' | 'multiligne' | 'choix';
+  options?: string[];
+  requis?: boolean;
+}
 interface Config {
   titre: string;
   chemin: string;
   colonnes: Colonne[];
   supprimable?: boolean;
-  formulaire?: { cle: string; libelle: string }[];
+  formulaire?: Champ[];
+  /** Pas de création depuis cet écran : le formulaire n'apparaît que pour modifier une ligne. */
+  modificationSeule?: boolean;
   /** Bascule d'un booléen (ex. compte actif). */
   bascule?: { cle: string; libelle: string };
   /** Action « Annuler » qui passe le statut à annulee. */
@@ -32,6 +43,12 @@ const CONFIGS: Record<string, Config> = {
       { titre: 'Actif', valeur: (u) => (u.actif === false ? 'Non' : 'Oui') },
     ],
     bascule: { cle: 'actif', libelle: 'Activer / désactiver' },
+    formulaire: [
+      { cle: 'nom', libelle: 'Nom', requis: true },
+      { cle: 'prenom', libelle: 'Prénom', requis: true },
+      { cle: 'role', libelle: 'Rôle', source: 'roleLibelle', type: 'choix', options: ['sportif', 'coach', 'salle', 'administrateur'] },
+    ],
+    modificationSeule: true,
     supprimable: true,
   },
   salles: {
@@ -42,6 +59,14 @@ const CONFIGS: Record<string, Config> = {
       { titre: 'Ville', valeur: (s) => s.ville },
       { titre: 'Capacité', valeur: (s) => String(s.capaciteMax) },
     ],
+    formulaire: [
+      { cle: 'nom', libelle: 'Nom', requis: true },
+      { cle: 'adresse', libelle: 'Adresse', requis: true },
+      { cle: 'ville', libelle: 'Ville', requis: true },
+      { cle: 'description', libelle: 'Description', type: 'multiligne' },
+      { cle: 'capaciteMax', libelle: 'Capacité maximale', type: 'nombre', requis: true },
+    ],
+    modificationSeule: true,
     supprimable: true,
   },
   coachs: {
@@ -52,6 +77,13 @@ const CONFIGS: Record<string, Config> = {
       { titre: 'Ville', valeur: (c) => c.ville },
       { titre: 'Spécialités', valeur: (c) => c.specialites },
     ],
+    formulaire: [
+      { cle: 'presentation', libelle: 'Présentation', type: 'multiligne' },
+      { cle: 'specialites', libelle: 'Spécialités', requis: true },
+      { cle: 'tarifHoraire', libelle: 'Tarif horaire (€)', type: 'nombre' },
+      { cle: 'ville', libelle: 'Ville', requis: true },
+    ],
+    modificationSeule: true,
     supprimable: true,
   },
   activites: {
@@ -62,7 +94,7 @@ const CONFIGS: Record<string, Config> = {
       { titre: 'Description', valeur: (a) => a.description ?? '' },
     ],
     formulaire: [
-      { cle: 'nom', libelle: 'Nom' },
+      { cle: 'nom', libelle: 'Nom', requis: true },
       { cle: 'description', libelle: 'Description' },
     ],
     supprimable: true,
@@ -71,7 +103,7 @@ const CONFIGS: Record<string, Config> = {
     titre: 'Équipements',
     chemin: CHEMINS.equipements,
     colonnes: [{ titre: 'Nom', valeur: (e) => e.nom }],
-    formulaire: [{ cle: 'nom', libelle: 'Nom' }],
+    formulaire: [{ cle: 'nom', libelle: 'Nom', requis: true }],
     supprimable: true,
   },
   reservations: {
@@ -144,7 +176,7 @@ export class AdminListe {
 
   editer(l: any) {
     this.edition.set(l);
-    this.saisie.set(Object.fromEntries((this.config.formulaire ?? []).map((c) => [c.cle, l[c.cle] ?? ''])));
+    this.saisie.set(Object.fromEntries((this.config.formulaire ?? []).map((c) => [c.cle, String(l[c.source ?? c.cle] ?? '')])));
   }
 
   annulerEdition() {
@@ -153,10 +185,27 @@ export class AdminListe {
   }
 
   ajouter() {
-    const corps = this.saisie();
-    if (!corps['nom']?.trim()) {
-      this.message.set('Le nom est obligatoire.');
+    const champs = this.config.formulaire ?? [];
+    const saisie = this.saisie();
+    const manquant = champs.find((c) => c.requis && !saisie[c.cle]?.trim());
+    if (manquant) {
+      this.message.set(`Le champ « ${manquant.libelle} » est obligatoire.`);
       return;
+    }
+    const corps: Record<string, string | number> = {};
+    for (const c of champs) {
+      const v = (saisie[c.cle] ?? '').trim();
+      if (c.type === 'nombre') {
+        if (v === '') continue;
+        const n = Number(v.replace(',', '.'));
+        if (Number.isNaN(n)) {
+          this.message.set(`Le champ « ${c.libelle} » doit être un nombre.`);
+          return;
+        }
+        corps[c.cle] = n;
+      } else {
+        corps[c.cle] = v;
+      }
     }
     this.message.set('');
     const e = this.edition();
