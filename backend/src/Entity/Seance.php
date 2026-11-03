@@ -8,44 +8,69 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use ApiPlatform\Metadata\ApiResource;
+use App\State\UtilisateurConnecteProcessor;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(denormalizationContext: ['groups' => ['write']], normalizationContext: ['groups' => ['seance:read']], operations: [
+    new GetCollection(),
+    new Get(),
+    new Post(processor: UtilisateurConnecteProcessor::class, securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+    new Put(processor: UtilisateurConnecteProcessor::class, security: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))", securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+    new Patch(processor: UtilisateurConnecteProcessor::class, security: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))", securityPostDenormalize: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+    new Delete(security: "is_granted('ROLE_ADMINISTRATEUR') or ((object.getProfilCoach() != null and object.getProfilCoach().getUtilisateur() == user) or (object.getProfilCoach() == null and object.getSalle() != null and object.getSalle().getGestionnaire() == user))"),
+])]
 class Seance
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['seance:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type:Types::DATE_IMMUTABLE)]
+    #[Groups(['write', 'seance:read'])]
     private ?\DateTimeImmutable $dateSeance = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
+    #[Groups(['write', 'seance:read'])]
     private ?\DateTimeImmutable $heureDebut = null;
 
     #[ORM\Column]
+    #[Groups(['write', 'seance:read'])]
     private ?int $dureeMinutes = null;
 
     #[ORM\Column]
+    #[Groups(['write', 'seance:read'])]
     private ?int $capacite = null;
 
     #[ORM\Column]
+    #[Groups(['write', 'seance:read'])]
     private ?float $prix = null;
 
     #[ORM\Column(length: 30)]
+    #[Groups(['write', 'seance:read'])]
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['write', 'seance:read'])]
     private ?Activite $activite = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
+    #[Groups(['write', 'seance:read'])]
     private ?ProfilCoach $profilCoach = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
+    #[Groups(['write', 'seance:read'])]
     private ?Salle $salle = null;
 
     /**
@@ -179,6 +204,15 @@ class Seance
         $this->salle = $salle;
 
         return $this;
+    }
+
+    /** Places encore disponibles (capacité moins les réservations non annulées). */
+    #[Groups(['seance:read'])]
+    public function getPlacesRestantes(): int
+    {
+        $actives = $this->reservations->filter(static fn (Reservation $r) => 'annulee' !== $r->getStatut())->count();
+
+        return max(0, (int) $this->capacite - $actives);
     }
 
     /**

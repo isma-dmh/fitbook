@@ -3,16 +3,30 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Entity\Traits\Timestampable;
 use App\Repository\ActiviteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ActiviteRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(denormalizationContext: ['groups' => ['write']], operations: [
+    new GetCollection(),
+    new Get(),
+    new Post(security: "is_granted('ROLE_ADMINISTRATEUR')"),
+    new Put(security: "is_granted('ROLE_ADMINISTRATEUR')"),
+    new Patch(security: "is_granted('ROLE_ADMINISTRATEUR')"),
+    new Delete(security: "is_granted('ROLE_ADMINISTRATEUR')"),
+])]
 class Activite
 {
     #[ORM\Id]
@@ -21,9 +35,11 @@ class Activite
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['write'])]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['write'])]
     private ?string $description = null;
 
     /**
