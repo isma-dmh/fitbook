@@ -18,6 +18,11 @@ function enfantsEspace(espace: 'coach' | 'salle', pageProfil: { chemin: string; 
   ];
 }
 
+const admin = (ressource: string) => ({
+  data: { espace: 'admin', ressource },
+  loadComponent: () => import('./features/admin/admin-liste/admin-liste').then((m) => m.AdminListe),
+});
+
 export const routes: Routes = [
   {
     path: '',
@@ -60,6 +65,21 @@ export const routes: Routes = [
     data: { espace: 'salle' },
     loadComponent: () => import('./layout/espace-layout/espace-layout').then((m) => m.EspaceLayout),
     children: enfantsEspace('salle', { chemin: 'ma-salle', charger: () => import('./features/espace/ma-salle/ma-salle').then((m) => m.MaSalle) }),
+  },
+  {
+    path: 'admin',
+    canActivate: [roleGuard('administrateur')],
+    data: { espace: 'admin' },
+    loadComponent: () => import('./layout/espace-layout/espace-layout').then((m) => m.EspaceLayout),
+    children: [
+      { path: '', ...admin('utilisateurs') },
+      { path: 'salles', ...admin('salles') },
+      { path: 'coachs', ...admin('coachs') },
+      { path: 'activites', ...admin('activites') },
+      { path: 'equipements', ...admin('equipements') },
+      { path: 'reservations', ...admin('reservations') },
+      { path: 'avis', ...admin('avis') },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];

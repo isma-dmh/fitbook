@@ -1,0 +1,48 @@
+<h1>{{ config.titre }}</h1>
+@if (message()) { <p class="alerte erreur-bloc" role="alert">{{ message() }}</p> }
+
+@if (config.formulaire) {
+  <form class="formulaire carte" (ngSubmit)="ajouter()">
+    <h2>{{ edition() ? 'Modifier' : 'Ajouter' }}</h2>
+    @for (c of config.formulaire; track c.cle) {
+      <div class="champ">
+        <label [for]="'f-' + c.cle">{{ c.libelle }}</label>
+        <input [id]="'f-' + c.cle" class="input" [name]="c.cle" [ngModel]="saisie()[c.cle]" (ngModelChange)="maj(c.cle, $event)" />
+      </div>
+    }
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Enregistrer</button>
+      @if (edition()) { <button type="button" class="btn" (click)="annulerEdition()">Annuler</button> }
+    </div>
+  </form>
+}
+
+@if (!lignes()) {
+  <p class="muted">Chargement…</p>
+} @else {
+  <div class="tableau-conteneur">
+    <table class="tableau">
+      <thead>
+        <tr>
+          @for (c of config.colonnes; track c.titre) { <th>{{ c.titre }}</th> }
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (l of lignes(); track l.id) {
+          <tr>
+            @for (c of config.colonnes; track c.titre) { <td>{{ c.valeur(l) }}</td> }
+            <td class="actions-cellule">
+              @if (config.formulaire) { <button type="button" class="btn btn-sm" (click)="editer(l)">Modifier</button> }
+              @if (config.bascule) { <button type="button" class="btn btn-sm" (click)="basculer(l)">{{ config.bascule.libelle }}</button> }
+              @if (config.annulable && l.statut !== 'annulee') { <button type="button" class="btn btn-sm" (click)="annuler(l)">Annuler</button> }
+              @if (config.supprimable) { <button type="button" class="btn btn-sm btn-danger" (click)="supprimer(l)">Supprimer</button> }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td [attr.colspan]="config.colonnes.length + 1" class="muted">Aucun élément.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
