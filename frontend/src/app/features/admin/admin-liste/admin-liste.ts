@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Api, CHEMINS } from '../../../core/api';
 import { Donnees } from '../../../core/donnees';
-import { iri, jourFr, messageErreur, nomComplet } from '../../../core/utils';
+import { Catalogue, Vue } from '../../../core/catalogue';
+import { heure, iri, jourFr, messageErreur, nomComplet } from '../../../core/utils';
 
 interface Colonne {
   titre: string;
-  valeur: (e: any) => string;
+  valeur: (e: any, v: Vue | null) => string;
 }
 interface Champ {
   cle: string;
@@ -111,7 +112,15 @@ const CONFIGS: Record<string, Config> = {
     chemin: CHEMINS.reservations,
     colonnes: [
       { titre: 'Sportif', valeur: (r) => nomComplet(r.utilisateur) || '—' },
-      { titre: 'Séance', valeur: (r) => iri(r.seance) ?? '' },
+      {
+        titre: 'Séance',
+        valeur: (r, v) => {
+          const s = v?.d.seances.find((x) => x['@id'] === iri(r.seance));
+          if (!s) return iri(r.seance) ?? '';
+          const lieu = v!.salle(iri(s.salle))?.nom ?? '';
+          return [v!.nomActivite(s.activite), `${jourFr(s.dateSeance)} ${heure(s.heureDebut)}`, lieu].filter(Boolean).join(' · ');
+        },
+      },
       { titre: 'Statut', valeur: (r) => (r.statut === 'annulee' ? 'Annulée' : 'Confirmée') },
     ],
     annulable: true,
@@ -123,7 +132,15 @@ const CONFIGS: Record<string, Config> = {
       { titre: 'Auteur', valeur: (a) => nomComplet(a.utilisateur) || '—' },
       { titre: 'Note', valeur: (a) => `${a.note} / 5` },
       { titre: 'Commentaire', valeur: (a) => a.commentaire ?? '' },
-      { titre: 'Date', valeur: (a) => (a.dateCreation ? jourFr(a.dateCreation) : '') },
+      {
+        titre: 'Cible',
+        valeur: (a, v) => {
+          const salle = v?.salle(iri(a.salle));
+          if (salle) return `Salle · ${salle.nom}`;
+          const coach = v?.coach(iri(a.profilCoach));
+          return coach ? `Coach · ${v!.nomCoach(coach)}` : '—';
+        },
+      },
     ],
     supprimable: true,
   },
@@ -140,6 +157,9 @@ const CONFIGS: Record<string, Config> = {
 export class AdminListe {
   private api = inject(Api);
   private donnees = inject(Donnees);
+  private catalogue = inject(Catalogue);
+  /** Données de référence (activités, séances, salles, coachs) pour afficher des libellés plutôt que des adresses d'API. */
+  vue = signal<Vue | null>(null);
   readonly config: Config = CONFIGS[inject(ActivatedRoute).snapshot.data['ressource']];
 
   lignes = signal<any[] | null>(null);
@@ -149,6 +169,9 @@ export class AdminListe {
 
   constructor() {
     this.charger();
+    if (['reservations', 'avis'].includes(inject(ActivatedRoute).snapshot.data['ressource'])) {
+      this.catalogue.tout().subscribe({ next: (v) => this.vue.set(v) });
+    }
   }
 
   private charger() {

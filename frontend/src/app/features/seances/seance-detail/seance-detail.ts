@@ -26,6 +26,8 @@ export class SeanceDetail {
   envoi = signal(false);
   message = signal('');
   reservee = signal(false);
+  /** Places prises par l'utilisateur depuis le dernier chargement : mise à jour immédiate du compteur. */
+  prises = signal(0);
 
   seance = computed<Seance | undefined>(() => {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -33,7 +35,7 @@ export class SeanceDetail {
   });
   salle = computed(() => this.vue()?.salle(iri(this.seance()?.salle)));
   coach = computed(() => this.vue()?.coach(iri(this.seance()?.profilCoach)));
-  places = computed(() => (this.seance() ? (this.vue()?.places(this.seance()!) ?? 0) : 0));
+  places = computed(() => (this.seance() ? Math.max(0, (this.vue()?.places(this.seance()!) ?? 0) - this.prises()) : 0));
   passee = computed(() => (this.seance() ? estPassee(this.seance()!) : false));
   jour = computed(() => jourFr(this.seance()?.dateSeance));
   heureDebut = computed(() => heure(this.seance()?.heureDebut));
@@ -47,6 +49,7 @@ export class SeanceDetail {
     this.catalogue.tout().subscribe({
       next: (v) => {
         this.vue.set(v);
+        this.prises.set(0);
         const id = Number(this.route.snapshot.paramMap.get('id'));
         if (!v.d.seances.some((s) => s.id === id)) this.erreur.set(true);
       },
@@ -64,7 +67,8 @@ export class SeanceDetail {
       next: () => {
         this.envoi.set(false);
         this.reservee.set(true);
-        this.catalogue.invalider();
+        this.prises.update((n) => n + 1);
+        this.catalogue.invalider(CHEMINS.seances, CHEMINS.reservations);
         this.charger();
       },
       error: (e) => {

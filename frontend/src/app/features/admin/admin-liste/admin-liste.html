@@ -46,7 +46,7 @@
       <tbody>
         @for (l of lignes(); track l.id) {
           <tr>
-            @for (c of config.colonnes; track c.titre) { <td>{{ c.valeur(l) }}</td> }
+            @for (c of config.colonnes; track c.titre) { <td>{{ c.valeur(l, vue()) }}</td> }
             <td class="actions-cellule">
               @if (config.formulaire) { <button type="button" class="btn btn-sm" (click)="editer(l)">Modifier</button> }
               @if (config.bascule) { <button type="button" class="btn btn-sm" (click)="basculer(l)">{{ config.bascule.libelle }}</button> }

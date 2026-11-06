@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, of } from 'rxjs';
 import { CHEMINS } from './api';
 import { Donnees } from './donnees';
 import { Activite, Avis, Disponibilite, Equipement, HoraireCoach, HoraireSalle, PhotoSalle, ProfilCoach, Salle, Seance } from './models';
@@ -132,7 +132,11 @@ export class Vue {
 export class Catalogue {
   private donnees = inject(Donnees);
 
-  tout(): Observable<Vue> {
+  /**
+   * Charge les collections du catalogue. Les horaires et disponibilités ne servent qu'aux fiches détaillées
+   * et aux espaces de gestion : on ne les demande (`complet`) que là, pour accélérer les autres pages.
+   */
+  tout(complet = false): Observable<Vue> {
     const d = this.donnees;
     return forkJoin({
       salles: d.liste<Salle>(CHEMINS.salles),
@@ -142,9 +146,9 @@ export class Catalogue {
       seances: d.liste<Seance>(CHEMINS.seances),
       avis: d.liste<Avis>(CHEMINS.avis),
       photos: d.liste<PhotoSalle>(CHEMINS.photosSalle),
-      horairesSalle: d.liste<HoraireSalle>(CHEMINS.horairesSalle),
-      horairesCoach: d.liste<HoraireCoach>(CHEMINS.horairesCoach),
-      disponibilites: d.liste<Disponibilite>(CHEMINS.disponibilites),
+      horairesSalle: complet ? d.liste<HoraireSalle>(CHEMINS.horairesSalle) : of([] as HoraireSalle[]),
+      horairesCoach: complet ? d.liste<HoraireCoach>(CHEMINS.horairesCoach) : of([] as HoraireCoach[]),
+      disponibilites: complet ? d.liste<Disponibilite>(CHEMINS.disponibilites) : of([] as Disponibilite[]),
     }).pipe(
       map(
         (r) =>
@@ -164,7 +168,7 @@ export class Catalogue {
     );
   }
 
-  invalider() {
-    this.donnees.invalider();
+  invalider(...chemins: string[]) {
+    this.donnees.invalider(...chemins);
   }
 }
