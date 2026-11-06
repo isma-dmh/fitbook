@@ -44,7 +44,7 @@ export class SalleDetail {
   seances = computed(() => this.vue()?.seancesSalle(this.salle()?.['@id']).slice(0, 6) ?? []);
 
   constructor() {
-    this.catalogue.tout().subscribe({
+    this.catalogue.tout(true).subscribe({
       next: (v) => {
         this.vue.set(v);
         const id = Number(this.route.snapshot.paramMap.get('id'));

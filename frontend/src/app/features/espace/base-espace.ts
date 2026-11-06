@@ -27,7 +27,7 @@ export abstract class BaseEspace {
   }
 
   protected charger(): void {
-    this.catalogue.tout().subscribe({
+    this.catalogue.tout(true).subscribe({
       next: (v) => this.vue.set(v),
       error: () => this.erreur.set('Impossible de charger les données.'),
     });

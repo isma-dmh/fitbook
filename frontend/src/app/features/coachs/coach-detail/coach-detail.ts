@@ -42,7 +42,7 @@ export class CoachDetail {
   salles = computed(() => (this.coach()?.salles ?? []).map((i) => this.vue()?.salle(iri(i))).filter((s) => !!s));
 
   constructor() {
-    this.catalogue.tout().subscribe({
+    this.catalogue.tout(true).subscribe({
       next: (v) => {
         this.vue.set(v);
         const id = Number(this.route.snapshot.paramMap.get('id'));
