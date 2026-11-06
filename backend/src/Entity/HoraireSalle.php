@@ -13,6 +13,7 @@ use App\Repository\HoraireSalleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HoraireSalleRepository::class)]
 #[ApiResource(denormalizationContext: ['groups' => ['write']], operations: [
@@ -32,19 +33,23 @@ class HoraireSalle
 
     #[ORM\Column]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?int $jourSemaine = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $heureOuverture = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $heureFermeture = null;
 
     #[ORM\ManyToOne(inversedBy: 'horaireSalles')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?Salle $salle = null;
 
     public function getId(): ?int

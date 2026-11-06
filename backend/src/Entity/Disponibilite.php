@@ -14,6 +14,7 @@ use App\Repository\DisponibiliteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DisponibiliteRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -34,18 +35,22 @@ class Disponibilite
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $dateDispo = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $heureDebut = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $heureFin = null;
 
     #[ORM\Column(length: 20)]
     #[Groups(['write'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?string $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'disponibilites')]

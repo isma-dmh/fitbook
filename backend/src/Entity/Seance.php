@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiResource;
 use App\State\UtilisateurConnecteProcessor;
 use ApiPlatform\Metadata\Delete;
@@ -38,31 +39,38 @@ class Seance
 
     #[ORM\Column(type:Types::DATE_IMMUTABLE)]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $dateSeance = null;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE)]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?\DateTimeImmutable $heureDebut = null;
 
     #[ORM\Column]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?int $dureeMinutes = null;
 
     #[ORM\Column]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?int $capacite = null;
 
     #[ORM\Column]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?float $prix = null;
 
     #[ORM\Column(length: 30)]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['write', 'seance:read'])]
+    #[Assert\NotNull(message: 'Ce champ est obligatoire.')]
     private ?Activite $activite = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
